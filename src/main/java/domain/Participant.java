@@ -22,6 +22,7 @@ public class Participant {
     private Contest contest;  //The contest that the participant takes part in
 
     public Participant() {
+        this.bidNumber = -1;
         this.firstName = "unnamed";
         this.lastName = "unnamed";
         this.eMail = "not available";
@@ -30,6 +31,19 @@ public class Participant {
         this.club = "not available";
         this.raceResult = Duration.ofSeconds(0, 0);
     }
+
+    public Participant(Integer bidNumber, String firstName, String lastName, String eMail, String phone, String address, String club, Duration raceResult, Contest contest) {
+        this.bidNumber = bidNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.eMail = eMail;
+        this.phone = phone;
+        this.address = address;
+        this.club = club;
+        this.raceResult = raceResult;
+        this.contest = contest;
+    }
+    
 
     public Integer getId() {
         return id;
@@ -113,7 +127,9 @@ public class Participant {
 
     @Override
     public String toString() {
-        return firstName + " " 
+        return 
+                bidNumber + " "
+                + firstName + " "
                 + lastName + " "
                 + eMail + " "
                 + phone + " "

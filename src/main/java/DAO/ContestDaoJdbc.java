@@ -20,6 +20,10 @@ import java.util.List;
  */
 public class ContestDaoJdbc implements ContestDao{
 
+    /**
+     *
+     * @param contest
+     */
     @Override
     public void create(Contest contest) {
         String sqlQuery = "INSERT INTO Contest(name, startingTime) VALUES (?,?)";
@@ -35,16 +39,29 @@ public class ContestDaoJdbc implements ContestDao{
         }
     }
 
+    /**
+     *
+     * @param contest
+     */
     @Override
     public void update(Contest contest) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param key
+     */
     @Override
     public void delete(Integer key) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     @Override
     public Contest findById(Integer key) {
         String sqlQuery = "SELECT * FROM Contest WHERE id = ?";
@@ -63,6 +80,10 @@ public class ContestDaoJdbc implements ContestDao{
         return contest;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Contest> listAll() {
         String sqlQuery = "SELECT * FROM Contest";

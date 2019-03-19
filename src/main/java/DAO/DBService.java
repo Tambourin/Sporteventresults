@@ -3,6 +3,7 @@ package DAO;
 
 import domain.Contest;
 import domain.Participant;
+import java.time.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -15,14 +16,15 @@ public class DBService {
     ParticipantDao participantDao;
     ContestDao contestDao;
     
-    
     public DBService() {
         //Instantiate Dao Classes that take care of concrete database communication
         participantDao = new ParticipantDaoJdbc();
         contestDao = new ContestDaoJdbc();
     }
     
-    
+    /**
+     * Creates a new Participant to database
+     */
     public void addParticipant(Integer bidNumber, String firstName, 
             String lastName, String eMail, String phone, String address, 
             String club, Contest contest) {
@@ -36,6 +38,16 @@ public class DBService {
         participant.setClub(club);
         participant.setContest(contest);
         participantDao.create(participant);
+    }
+    
+      public void updateParticipant (Integer id, Integer bidNumber, String firstName, 
+            String lastName, String eMail, String phone, String address, 
+            String club, Contest contest) {
+        Participant participant = new Participant
+            (bidNumber, firstName, lastName, eMail, phone, 
+            address, club, Duration.ZERO, contest);
+        participant.setId(id);
+        participantDao.update(participant);
     }
     
     /** @return Returns all participants*/
@@ -55,6 +67,11 @@ public class DBService {
         return participants;
     }
   
+    public void deleteParticipant(Participant participant) {
+        participantDao.delete(participant.getId());
+    }
+    
+    
     /** 
      @return ObservableList of all Contests 
      */
@@ -63,6 +80,5 @@ public class DBService {
         contests.addAll(contestDao.listAll());
         return contests;
     }
-    
     
 }

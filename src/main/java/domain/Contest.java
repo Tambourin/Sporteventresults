@@ -49,13 +49,12 @@ public class Contest {
     }
 
 
-
     @Override
     public String toString() {
         return name + " " + startingTime.toString();
     }
 
-@Override
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

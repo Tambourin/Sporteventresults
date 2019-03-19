@@ -52,6 +52,10 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         }
     }
 
+    /**
+     *
+     * @param participant
+     */
     @Override
     public void update(Participant participant){
         String sqlQuery = 
@@ -67,7 +71,7 @@ public class ParticipantDaoJdbc implements ParticipantDao{
             participant.getAddress(),
             participant.getClub(),
             participant.getRaceResult().toString(),
-            1,
+            participant.getContest().getId(),
             participant.getId()
         }; 
         try (Connection conn = DaoUtil.getConnection();
@@ -122,6 +126,11 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         return participant;
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     @Override
     public Participant findByName(String name) {
         String sqlQuery = 
@@ -143,6 +152,10 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         return participant;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Participant> listAll() {
         String sqlQuery = "SELECT * FROM Participant";
@@ -161,6 +174,11 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         return participants;
     }
     
+    /**
+     *
+     * @param contest
+     * @return
+     */
     @Override
     public List<Participant> listByContest(Contest contest) {
         String sqlQuery = "SELECT * FROM Participant WHERE ContestID = ?";

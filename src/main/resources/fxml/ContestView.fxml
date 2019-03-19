@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="sportevent.sporteventresults.ContestViewController">
+<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="754.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewControllers.ContestViewController">
    <children>
-      <ListView fx:id="contestsListView" layoutX="24.0" layoutY="14.0" prefHeight="368.0" prefWidth="258.0" />
+      <HBox fillHeight="false" prefHeight="650.0" prefWidth="754.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ListView fx:id="contestsListView" prefHeight="623.0" prefWidth="173.0" />
+            <VBox prefHeight="650.0" prefWidth="583.0">
+               <children>
+                  <Label text="Nimi" />
+                  <TextField fx:id="nameField" />
+                  <Label text="Matka" />
+                  <TextField fx:id="distanceField" />
+                  <Label layoutX="10.0" layoutY="64.0" text="Lähtöaika" />
+                  <TextField fx:id="startingTimeField" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
