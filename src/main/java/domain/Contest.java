@@ -2,6 +2,7 @@
 package domain;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  *
@@ -53,7 +54,29 @@ public class Contest {
     public String toString() {
         return name + " " + startingTime.toString();
     }
-    
+
+@Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()){
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }  
+        Contest p = (Contest) obj;
+        return p.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
     
     
 }

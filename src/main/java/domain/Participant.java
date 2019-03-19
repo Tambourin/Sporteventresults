@@ -3,6 +3,7 @@ package domain;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  *
@@ -120,6 +121,28 @@ public class Participant {
                 + club + " "
                 + raceResult.toString() + " "
                 + contest;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Participant p = (Participant) obj;
+        return p.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 
     

@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <HBox prefHeight="736.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sportevent.sporteventresults.MainViewController">
    <children>
       <AnchorPane fx:id="menuPane" prefHeight="736.0" prefWidth="310.0">
@@ -14,7 +13,6 @@
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="247.0">
                <children>
                   <Button fx:id="contestsButton" mnemonicParsing="false" prefHeight="131.0" prefWidth="247.0" text="Sarjat" />
-                  <Button fx:id="addParticipantButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="247.0" text="Lisää kilpailija" />
                   <Button fx:id="startingListButton" layoutX="10.0" layoutY="141.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="247.0" text="Kilpailijat" />
                   <Button layoutX="10.0" layoutY="141.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="247.0" text="Kilpailutila" />
                   <Button layoutX="10.0" layoutY="272.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="247.0" text="Tulokset" />

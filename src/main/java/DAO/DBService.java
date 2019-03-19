@@ -59,7 +59,7 @@ public class DBService {
      @return ObservableList of all Contests 
      */
     public ObservableList<Contest> getContests() {
-        ObservableList contests = FXCollections.observableArrayList();
+        ObservableList<Contest> contests = FXCollections.<Contest>observableArrayList();
         contests.addAll(contestDao.listAll());
         return contests;
     }

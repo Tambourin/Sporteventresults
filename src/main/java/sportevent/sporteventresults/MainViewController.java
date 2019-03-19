@@ -30,8 +30,6 @@ public class MainViewController implements Initializable {
     AnchorPane menuPane;
     
     @FXML
-    Button addParticipantButton;
-    @FXML
     Button startingListButton;
     @FXML
     Button contestsButton;
@@ -45,9 +43,6 @@ public class MainViewController implements Initializable {
         contestsButton.setOnAction(event -> {
             loadContestView();
         });
-        addParticipantButton.setOnAction(event -> {
-            loadSinglePersonView();
-        });
         startingListButton.setOnAction(event -> {
             loadListParticipantsView();
         });
@@ -56,15 +51,6 @@ public class MainViewController implements Initializable {
     private void loadContestView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/ContestView.fxml"));          
-            contentPane.getChildren().setAll(main);
-        } catch (IOException ex) {
-            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private void loadSinglePersonView(){
-        try {
-            Parent main = FXMLLoader.load(getClass().getResource("/fxml/SinglePersonView.fxml"));          
             contentPane.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);

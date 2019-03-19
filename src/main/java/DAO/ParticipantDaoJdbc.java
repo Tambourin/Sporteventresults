@@ -22,7 +22,7 @@ public class ParticipantDaoJdbc implements ParticipantDao{
     
     
     /**
-     * Inserts a row into the Participant table using values of
+     * Inserts a record into the Participant table using values of
      * paticipant object that is passed to the method.
      * @param participant Participant whose values are inserted into table.
      */
