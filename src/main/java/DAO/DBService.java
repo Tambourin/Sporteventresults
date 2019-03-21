@@ -9,7 +9,8 @@ import javafx.collections.ObservableList;
 
 /**
  * Handles database communication using DAO-classes
- */
+
+*/
 
 public class DBService {
     
