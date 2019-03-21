@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,8 +22,13 @@ public class DaoUtil {
      * @return returns Connection to database
      * @throws SQLException 
      */
-    public static Connection getConnection() throws SQLException{
-        return DriverManager.getConnection(CONNECTION_DB);
+    public static Connection getConnection(){      
+        try {
+            return DriverManager.getConnection(CONNECTION_DB);
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
  /** Sets values to preparedStatement. Arbitary number of Object parameters

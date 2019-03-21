@@ -49,8 +49,6 @@ public class ListParticipantsViewController implements Initializable {
     /**
      * Initializes the controller class. 
      * Populates tabels and sets event handlers to controls.
-     * @param url
-     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,20 +56,21 @@ public class ListParticipantsViewController implements Initializable {
         populateParticipantTable();
         
         //Repopulate participant table if another contest is selected from the contest list  
-        contestList.getSelectionModel().selectedIndexProperty().addListener((obs, oldValue, newValue) -> populateParticipantTable());          
+        contestList.getSelectionModel().selectedIndexProperty()
+                .addListener((obs, oldValue, newValue) -> populateParticipantTable());          
         //Double click on the table to open participants details
         participantTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 showSinglePersonViewWindow(participantTable.getSelectionModel()
-                        .getSelectedItem());                
-            }            
+                        .getSelectedItem());
+            }
         });
         //Open participants details dialog
-        editButton.setOnAction(event -> 
-                showSinglePersonViewWindow(participantTable.getSelectionModel()
-                        .getSelectedItem()));        
+        editButton.setOnAction(event
+                -> showSinglePersonViewWindow(participantTable.getSelectionModel()
+                        .getSelectedItem()));
         //Open participants details dialog with no data to add a new participant
-        addNewButton.setOnAction(event -> showSinglePersonViewWindow(null));        
+        addNewButton.setOnAction(event -> showSinglePersonViewWindow(null));       
     }    
     
     /**

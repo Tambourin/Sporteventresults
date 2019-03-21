@@ -70,8 +70,7 @@ public class DBService {
     public void deleteParticipant(Participant participant) {
         participantDao.delete(participant.getId());
     }
-    
-    
+        
     /** 
      @return ObservableList of all Contests 
      */

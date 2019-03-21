@@ -5,6 +5,7 @@ import DAO.DBService;
 import domain.Contest;
 import domain.Participant;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,14 +16,18 @@ import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
+import sun.security.krb5.internal.crypto.Des3;
 /**
- * FXML Controller class
- *
+ * FXML Controller class for SinglePersonView.
+ * This view is a dialog to edit and save details of specified participant.
+ * If no participant is preloaded, dialog shows empty fields and
+ * new participant can be created.
+ * 
  * @author Olavi
  */
 public class SinglePersonViewController implements Initializable {
 
-    private final DBService dbService = new DBService();
+    private DBService dbService;
     
     private Participant participant; //Participant that is being edited
     
@@ -48,14 +53,15 @@ public class SinglePersonViewController implements Initializable {
     private Button saveParticipantButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button cancelButton;
     /**
      * Initializes the controller class.
-     * Sets event handler to the button
-
+     * Sets event handler to the buttons
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {    
-                
+        dbService = new DBService();
         saveParticipantButton.setOnAction(event -> {
             //If the partisipant does not have an id attribute(it is not in the database),
             //add new participant to database otherwise update existing
@@ -66,7 +72,7 @@ public class SinglePersonViewController implements Initializable {
             }});          
         
         deleteButton.setOnAction(event -> deleteParticipant());
-        
+        cancelButton.setOnAction(event -> closeWindow());
         
     }    
     
@@ -89,14 +95,14 @@ public class SinglePersonViewController implements Initializable {
         emailField.setText(participant.geteMail());
         phoneField.setText(participant.getPhone());
         addressField.setText(participant.getAddress());
-        clubField.setText(participant.getClub());
-                
+        clubField.setText(participant.getClub());                
     }   
     /**
      * 
      */
     public void updateParticipant() {
-        dbService.updateParticipant(
+        if(participantDataIsValid()) {
+           dbService.updateParticipant(
             this.participant.getId(),
             Integer.parseInt(bidNumberField.getText()),
             firstNameField.getText(),
@@ -106,11 +112,13 @@ public class SinglePersonViewController implements Initializable {
             addressField.getText(),
             clubField.getText(),
             contestChoice.getSelectionModel().getSelectedItem());        
-        closeWindow();
+        closeWindow(); 
+        }        
     }
     
     public void addNewParticipant() {
-        dbService.addParticipant(
+        if(participantDataIsValid()) {
+            dbService.addParticipant(
                 Integer.parseInt(bidNumberField.getText()),
                 firstNameField.getText(),
                 lastNameField.getText(),
@@ -119,7 +127,9 @@ public class SinglePersonViewController implements Initializable {
                 addressField.getText(),
                 clubField.getText(),
                 contestChoice.getSelectionModel().getSelectedItem());
-        closeWindow();
+            closeWindow();
+        }
+        
     }
     
     /**
@@ -135,6 +145,62 @@ public class SinglePersonViewController implements Initializable {
             dbService.deleteParticipant(this.participant);
             closeWindow();
         }  
+    }
+    
+    // Check if required fields are filled and have valid content
+    private boolean participantDataIsValid() {
+        String errorMessage = "";
+        if(bidNumberField.getText() == null || 
+                bidNumberField.getText().length() == 0){
+            errorMessage += "Lähtönumerokenttä on tyhjä ";
+        } else if(!bidNumberField.getText().matches("[0-9]+")) {
+            errorMessage += "Tarkista lähtönumero ";
+        } else if(bidNumberAlreadyInUse()) {
+            errorMessage += "Lähtönumero on jo käytössä";
+        }
+        
+        if(firstNameField.getText() == null || 
+                firstNameField.getText().length() == 0){
+            errorMessage += "Etunimikenttä on tyhjä ";
+        }
+        if(lastNameField.getText() == null || 
+                lastNameField.getText().length() == 0){
+            errorMessage += "Sukunimikenttä on tyhjä ";
+        }
+        Contest selectedContest = 
+                contestChoice.getSelectionModel().getSelectedItem();
+        if (selectedContest == null) {
+            errorMessage += "Valitse sarja! ";
+        }
+        
+        
+        if (errorMessage.length() == 0) {
+            return true;
+        }
+        
+        showErrorDialog(errorMessage);
+        return false;
+        
+    }
+    
+   private boolean bidNumberAlreadyInUse(){
+       List<Participant> participants = dbService.getParticipants();
+       int bidNumber = Integer.valueOf(bidNumberField.getText());
+       for (Participant p : participants) {
+           if (p.getBidNumber() == bidNumber) {
+               if (!p.equals(this.participant)){
+                   return true;
+               }
+           }
+       }
+       return false;
+   }
+    
+    private void showErrorDialog(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Huom!");
+        alert.setHeaderText(errorMessage);
+        alert.showAndWait();
     }
     
     private void closeWindow() {

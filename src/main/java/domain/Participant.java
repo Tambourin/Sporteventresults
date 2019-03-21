@@ -23,12 +23,12 @@ public class Participant {
 
     public Participant() {
         this.bidNumber = -1;
-        this.firstName = "unnamed";
-        this.lastName = "unnamed";
-        this.eMail = "not available";
-        this.phone = "not available";
-        this.address = "not available";
-        this.club = "not available";
+        this.firstName = "";
+        this.lastName = "";
+        this.eMail = "";
+        this.phone = "";
+        this.address = "";
+        this.club = "";
         this.raceResult = Duration.ofSeconds(0, 0);
     }
 

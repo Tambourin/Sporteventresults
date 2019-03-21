@@ -31,13 +31,13 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                <children>
-                  <Label text="Etunimi" />
+                  <Label text="Etunimi *" />
                   <TextField fx:id="firstNameField" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
                <children>
-                  <Label text="Sukunimi" />
+                  <Label text="Sukunimi *" />
                   <TextField fx:id="lastNameField" />
                </children>
             </VBox>
@@ -73,7 +73,7 @@
             </VBox>
             <VBox layoutX="310.0" layoutY="210.0" prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Label text="Lähtönumero" />
+                  <Label text="Lähtönumero *" />
                   <TextField fx:id="bidNumberField" />
                </children>
             </VBox>
@@ -81,6 +81,7 @@
               <buttons>
                   <Button fx:id="saveParticipantButton" mnemonicParsing="false" text="Tallenna" />
                   <Button fx:id="deleteButton" mnemonicParsing="false" text="Poista" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" text="Peruuta" />
               </buttons>
             </ButtonBar>
          </children>

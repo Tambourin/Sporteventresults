@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Contest {
     private Integer id;
     private String name;
+    private Integer lenght;
     private LocalTime startingTime;    
 
     public Contest() {
@@ -47,8 +48,7 @@ public class Contest {
     public void setStartingTime(LocalTime startingTime) {
         this.startingTime = startingTime;
     }
-
-
+    
     @Override
     public String toString() {
         return name + " " + startingTime.toString();
