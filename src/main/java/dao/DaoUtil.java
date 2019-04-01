@@ -1,7 +1,7 @@
 /**
  * An utility class to help and clean up DAO-classes
  */
-package DAO;
+package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,13 +22,12 @@ public class DaoUtil {
      * @return returns Connection to database
      * @throws SQLException 
      */
-    public static Connection getConnection(){      
+    public static Connection getConnection() throws SQLException{      
         try {
             return DriverManager.getConnection(CONNECTION_DB);
-        } catch (SQLException ex) {
-            Logger.getLogger(DaoUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            throw new SQLException("Couldn't connect to the database", e);
         }
-        return null;
     }
     
  /** Sets values to preparedStatement. Arbitary number of Object parameters

@@ -1,11 +1,15 @@
 
-package ViewControllers;
+package viewControllers;
 
-import DAO.DBService;
+import dao.ContestDao;
+import dao.ContestDaoJdbc;
+import dao.ParticipantDao;
+import dao.ParticipantDaoJdbc;
 import domain.Contest;
 import domain.Participant;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,18 +20,21 @@ import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
-import sun.security.krb5.internal.crypto.Des3;
+import javafx.event.Event;
+import javafx.scene.Node;
+
 /**
  * FXML Controller class for SinglePersonView.
- * This view is a dialog to edit and save details of specified participant.
+ * This is a controller fo a dialog view to edit and save details of specified participant.
  * If no participant is preloaded, dialog shows empty fields and
  * new participant can be created.
  * 
  * @author Olavi
  */
 public class SinglePersonViewController implements Initializable {
-
-    private DBService dbService;
+    
+    private final ParticipantDao participantDao = new ParticipantDaoJdbc();
+    private final ContestDao contestDao = new ContestDaoJdbc();
     
     private Participant participant; //Participant that is being edited
     
@@ -47,7 +54,6 @@ public class SinglePersonViewController implements Initializable {
     TextField addressField;
     @FXML
     TextField phoneField;
-
     
     @FXML    
     private Button saveParticipantButton;
@@ -57,23 +63,29 @@ public class SinglePersonViewController implements Initializable {
     private Button cancelButton;
     /**
      * Initializes the controller class.
-     * Sets event handler to the buttons
+     * Sets event handlers to the buttons
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {    
-        dbService = new DBService();
-        saveParticipantButton.setOnAction(event -> {
-            //If the partisipant does not have an id attribute(it is not in the database),
-            //add new participant to database otherwise update existing
+    public void initialize(URL url, ResourceBundle rb) {      
+        //If the partisipant does not have an id attribute(it is not in the database),
+        //add a new participant to database otherwise update existing one.
+        saveParticipantButton.setOnAction(event -> {            
             if (this.participant.getId() == null) {
-                addNewParticipant();
+                if(addNewParticipant()) {
+                    closeWindow(event);
+                }
             } else {
-                updateParticipant();
-            }});          
-        
-        deleteButton.setOnAction(event -> deleteParticipant());
-        cancelButton.setOnAction(event -> closeWindow());
-        
+                if (updateParticipant()){
+                    closeWindow(event);
+                }
+            }            
+        });      
+        deleteButton.setOnAction(event -> {
+            if (deleteParticipant()){
+                closeWindow(event);
+            } 
+        });
+        cancelButton.setOnAction(event -> closeWindow(event));
     }    
     
     /**
@@ -85,9 +97,8 @@ public class SinglePersonViewController implements Initializable {
         if (participant == null) {
             participant = new Participant();
         }
-        this.participant = participant;
-        
-        contestChoice.getItems().addAll(dbService.getContests());        
+        this.participant = participant;        
+        contestChoice.getItems().addAll(contestDao.findAll());        
         contestChoice.getSelectionModel().select(participant.getContest()); // Select participant's contest from the choicebox
         bidNumberField.setText(participant.getBidNumber().toString());
         firstNameField.setText(participant.getFirstName());
@@ -97,65 +108,66 @@ public class SinglePersonViewController implements Initializable {
         addressField.setText(participant.getAddress());
         clubField.setText(participant.getClub());                
     }   
+   
     /**
      * 
+     * @return Return true if operation was success.
      */
-    public void updateParticipant() {
-        if(participantDataIsValid()) {
-           dbService.updateParticipant(
-            this.participant.getId(),
-            Integer.parseInt(bidNumberField.getText()),
-            firstNameField.getText(),
-            lastNameField.getText(),
-            emailField.getText(),
-            phoneField.getText(),
-            addressField.getText(),
-            clubField.getText(),
-            contestChoice.getSelectionModel().getSelectedItem());        
-        closeWindow(); 
+    public boolean updateParticipant() {        
+        if(participantFieldsAreValid()) {  
+            readFieldsToParticipant();
+            participantDao.update(this.participant);
+            return true;
         }        
+        return false;
+    }  
+    
+    public boolean addNewParticipant() {
+        if(participantFieldsAreValid()) {
+            readFieldsToParticipant();
+            participantDao.create(this.participant);
+            return true;
+        }        
+        return false;
     }
     
-    public void addNewParticipant() {
-        if(participantDataIsValid()) {
-            dbService.addParticipant(
-                Integer.parseInt(bidNumberField.getText()),
-                firstNameField.getText(),
-                lastNameField.getText(),
-                emailField.getText(),
-                phoneField.getText(),
-                addressField.getText(),
-                clubField.getText(),
+    private void readFieldsToParticipant(){
+        this.participant.setBidNumber(Integer.parseInt(bidNumberField.getText()));
+        this.participant.setFirstName(firstNameField.getText());
+        this.participant.setLastName(lastNameField.getText());
+        this.participant.seteMail(emailField.getText());
+        this.participant.setPhone(phoneField.getText());
+        this.participant.setAddress(addressField.getText());
+        this.participant.setClub(clubField.getText());
+        this.participant.setContest(
                 contestChoice.getSelectionModel().getSelectedItem());
-            closeWindow();
-        }
-        
     }
     
     /**
-     * Opens an alert dialog if participant should be deleted or not. Deletes
-     * participant from database if user approves.
+     * Opens an alert dialog asking if participant should be deleted or not.
+     * @return Returns true if user pressed OK and participant was deleted
      */
-    public void deleteParticipant() {
+    public boolean deleteParticipant() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Huom!");
         alert.setHeaderText("Haluatko varmasti poistaa osanottajan");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            dbService.deleteParticipant(this.participant);
-            closeWindow();
+            participantDao.delete(this.participant.getId());
+            return true;
         }  
+        return false;
     }
     
     // Check if required fields are filled and have valid content
-    private boolean participantDataIsValid() {
-        String errorMessage = "";
+    private boolean participantFieldsAreValid() {
+        String errorMessage = "";        
         if(bidNumberField.getText() == null || 
                 bidNumberField.getText().length() == 0){
             errorMessage += "Lähtönumerokenttä on tyhjä ";
         } else if(!bidNumberField.getText().matches("[0-9]+")) {
             errorMessage += "Tarkista lähtönumero ";
-        } else if(bidNumberAlreadyInUse()) {
+        } else if(bidNumberAlreadyInUse(Integer.parseInt(bidNumberField.getText()))) {
             errorMessage += "Lähtönumero on jo käytössä";
         }
         
@@ -171,8 +183,7 @@ public class SinglePersonViewController implements Initializable {
                 contestChoice.getSelectionModel().getSelectedItem();
         if (selectedContest == null) {
             errorMessage += "Valitse sarja! ";
-        }
-        
+        }        
         
         if (errorMessage.length() == 0) {
             return true;
@@ -183,17 +194,25 @@ public class SinglePersonViewController implements Initializable {
         
     }
     
-   private boolean bidNumberAlreadyInUse(){
-       List<Participant> participants = dbService.getParticipants();
-       int bidNumber = Integer.valueOf(bidNumberField.getText());
-       for (Participant p : participants) {
-           if (p.getBidNumber() == bidNumber) {
-               if (!p.equals(this.participant)){
-                   return true;
-               }
-           }
+    /**
+     * @return Return true if participants bid number in is already assigned to 
+     * anothor participant (in this event.) / TO DO TO DO TODO TODO!!!!!!!!!!!!!!!
+     */
+    private boolean bidNumberAlreadyInUse(Integer bidNumber){
+//       List<Participant> participants = participantDao.listAll(); 
+//       for (Participant p : participants) {
+//           System.out.println(p.getBidNumber() + " : " + bidNumber);
+//           if (Objects.equals(p.getBidNumber(), bidNumber)) {               
+//               if (!p.equals(this.participant)){
+//                   return true;
+//               }
+//           }
+//       }
+//       return false;
+       if (participantDao.findByBidNumber(bidNumber) == null) {
+           return false;
        }
-       return false;
+       return true;
    }
     
     private void showErrorDialog(String errorMessage) {
@@ -203,8 +222,9 @@ public class SinglePersonViewController implements Initializable {
         alert.showAndWait();
     }
     
-    private void closeWindow() {
-        Stage stage = (Stage)saveParticipantButton.getScene().getWindow();
+    //Close the window where a closing event was fired.
+    private void closeWindow(Event event) {
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         stage.close();
     }
     

@@ -115,7 +115,7 @@ public class ContestTest {
     @Test
     public void testToString() {
         System.out.println("toString");       
-        String expResult = "Hölkkä 20:30";
+        String expResult = "Hölkkä";
         String result = instance.toString();
         assertEquals(expResult, result);
 

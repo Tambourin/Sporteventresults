@@ -13,9 +13,7 @@ public class Event {
     private Integer id;
     private String name;
     private String location;
-    private LocalDate eventDate;
-    private LocalTime eventStart;
-    private LocalTime eventEnds;
+    private LocalDate date;
     private String info;
 
     public Event() {
@@ -24,13 +22,18 @@ public class Event {
         this.info = "no extra info";
     }
 
-    public Event(Integer id, String name, String location, LocalDate eventDate, LocalTime eventStart, LocalTime eventEnds, String info) {
+    public Event(Integer id, String name, String location, LocalDate date, String info) {
         this.id = id;
         this.name = name;
         this.location = location;
-        this.eventDate = eventDate;
-        this.eventStart = eventStart;
-        this.eventEnds = eventEnds;
+        this.date = date;
+        this.info = info;
+    }
+
+    public Event(String name, String location, LocalDate date, String info) {
+        this.name = name;
+        this.location = location;
+        this.date = date;
         this.info = info;
     }
 
@@ -46,16 +49,8 @@ public class Event {
         return location;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
-    }
-
-    public LocalTime getEventStart() {
-        return eventStart;
-    }
-
-    public LocalTime getEventEnds() {
-        return eventEnds;
+    public LocalDate getDate() {
+        return date;
     }
 
     public String getInfo() {
@@ -74,17 +69,9 @@ public class Event {
         this.location = location;
     }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public void setEventStart(LocalTime eventStart) {
-        this.eventStart = eventStart;
-    }
-
-    public void setEventEnds(LocalTime eventEnds) {
-        this.eventEnds = eventEnds;
-    }
+    public void setDate(LocalDate eventDate) {
+        this.date = eventDate;
+    }    
 
     public void setInfo(String info) {
         this.info = info;

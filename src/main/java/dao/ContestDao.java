@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO;
+package dao;
 
 import domain.Contest;
 import java.util.List;
@@ -43,5 +43,5 @@ public interface ContestDao {
      *
      * @return
      */
-    List<Contest> listAll();
+    List<Contest> findAll();
 }

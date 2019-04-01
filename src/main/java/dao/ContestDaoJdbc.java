@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO;
+package dao;
 
 import domain.Contest;
 import java.sql.Connection;
@@ -45,7 +45,15 @@ public class ContestDaoJdbc implements ContestDao{
      */
     @Override
     public void update(Contest contest) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sqlQuery = "UPDATE Contest SET name = ?, startingTime = ? "
+                + "WHERE id = ?";
+        try (Connection conn = DaoUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {            
+            DaoUtil.setValues(stmt, contest.getName(), contest.getStartingTime(), contest.getId());
+            stmt.executeUpdate(); 
+        } catch(SQLException ex){
+            System.out.println(ex.getMessage()); 
+        }
     }
 
     /**
@@ -54,7 +62,14 @@ public class ContestDaoJdbc implements ContestDao{
      */
     @Override
     public void delete(Integer key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sqlQuery = "DELETE FROM Contest WHERE id = ?";
+        try (Connection conn = DaoUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
+            DaoUtil.setValues(stmt, key);
+            stmt.executeUpdate();
+        } catch (SQLException ex){
+            ex.printStackTrace(); 
+        }
     }
 
     /**
@@ -85,7 +100,7 @@ public class ContestDaoJdbc implements ContestDao{
      * @return
      */
     @Override
-    public List<Contest> listAll() {
+    public List<Contest> findAll() {
         String sqlQuery = "SELECT * FROM Contest";
         List<Contest> contests = new ArrayList();
         try (Connection conn = DaoUtil.getConnection();
@@ -109,6 +124,7 @@ public class ContestDaoJdbc implements ContestDao{
         } else {
             contest.setStartingTime(LocalTime.of(0, 0));
         }        
+        contest.setParticipantsNumber(new ParticipantDaoJdbc().countByContest(contest));
         
         return contest;
     }

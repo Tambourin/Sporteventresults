@@ -77,7 +77,7 @@ public class ListParticipantsViewController implements Initializable {
         contestList.getSelectionModel().selectedIndexProperty()
                 .addListener((obs, oldValue, newValue) -> 
                         populateParticipantTable(
-                participantDao.listByContest(contestList.getSelectionModel().getSelectedItem())));          
+                        participantDao.listByContest(contestList.getSelectionModel().getSelectedItem())));          
         //Double click on the table to open foundParticipants details
         participantTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -90,11 +90,17 @@ public class ListParticipantsViewController implements Initializable {
                 -> showSinglePersonViewWindow(participantTable.getSelectionModel()
                         .getSelectedItem()));
         //Open foundParticipants details dialog with no data to add a new participant
-        addNewButton.setOnAction(event -> showSinglePersonViewWindow(null));  
+        addNewButton.setOnAction(event -> showSinglePersonViewWindow(null)); 
+        
         deleteButton.setOnAction(event -> {
-                deleteParticipant(participantTable.getSelectionModel().getSelectedItem());
-                refreshParticipantTable();
-                        });
+                Participant participant = 
+                        participantTable.getSelectionModel().getSelectedItem();
+                if (promptDeleteParticipant(participant)) {
+                    participantDao.delete(participant.getId());
+                    refreshParticipantTable();
+                }
+        });
+        
         searchButton.setOnAction(event -> 
                 populateParticipantTable(search(searchField.getText())));
         searchField.setOnKeyPressed(event -> {
@@ -151,13 +157,13 @@ public class ListParticipantsViewController implements Initializable {
         participantTable.refresh();
     }
     
-    public boolean deleteParticipant(Participant participant) {
+    public boolean promptDeleteParticipant(Participant participant) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Huom!");
-        alert.setHeaderText("Haluatko varmasti poistaa osanottajan");
+        alert.setHeaderText("Haluatko varmasti poistaa osanottajan " +
+                participant.getFirstName() + " " + participant.getLastName());
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            participantDao.delete(participant.getId());
+        if (result.get() == ButtonType.OK) {            
             return true;
         }  
         return false;
@@ -190,8 +196,8 @@ public class ListParticipantsViewController implements Initializable {
             contestList.getSelectionModel().select(participant.getContest());
             refreshParticipantTable();
             participantTable.getSelectionModel().select(participant);
-        } catch (IOException e) {
             
+        } catch (IOException e) {            
             System.out.println(e);
         }           
     }

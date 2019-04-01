@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewControllers.RaceViewController">
+   <children>
+      <VBox prefHeight="758.0" prefWidth="203.0" spacing="6.0">
+         <children>
+            <Label text="Maaliinsaapuvien syöttö">
+               <VBox.margin>
+                  <Insets bottom="21.0" />
+               </VBox.margin>
+            </Label>
+            <Label text="Lähtönumero" />
+            <TextField fx:id="bidNumberField" />
+            <Label layoutX="10.0" layoutY="10.0" text="Aika" />
+            <TextField fx:id="timeField" layoutX="10.0" layoutY="27.0" promptText="Aika muotoa: 1:05:32" />
+            <Button fx:id="addButton" mnemonicParsing="false" text="Lisää" />
+         </children>
+         <padding>
+            <Insets bottom="21.0" left="21.0" right="21.0" top="6.0" />
+         </padding>
+      </VBox>
+      <VBox prefHeight="750.0" prefWidth="437.0" spacing="6.0">
+         <children>
+            <Label alignment="TOP_LEFT" prefHeight="17.0" prefWidth="381.0" text="Maaliin tulleet">
+               <VBox.margin>
+                  <Insets bottom="21.0" />
+               </VBox.margin>
+            </Label>
+            <TableView fx:id="finishedTable" prefHeight="656.0" prefWidth="375.0">
+              <columns>
+                <TableColumn fx:id="finishedBibNumberColumn" prefWidth="95.0" text="Lähtönumero" />
+                <TableColumn fx:id="finishedTimeColumn" prefWidth="102.0" text="Aika" />
+                  <TableColumn fx:id="finishedFirstNameColumn" prefWidth="70.0" text="Etunimi" />
+                  <TableColumn fx:id="finishedLastNameColumn" prefWidth="83.0" text="Sukunimi" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0">
+              <buttons>
+                <Button fx:id="removeFromFinished" mnemonicParsing="false" text="Poista maaliintulleista" />
+              </buttons>
+            </ButtonBar>
+         </children>
+         <padding>
+            <Insets bottom="21.0" left="21.0" right="21.0" top="6.0" />
+         </padding>
+      </VBox>
+      <VBox prefHeight="750.0" prefWidth="451.0" spacing="6.0">
+         <children>
+            <Label alignment="TOP_LEFT" prefHeight="17.0" prefWidth="397.0" text="Saapumatta">
+               <VBox.margin>
+                  <Insets bottom="21.0" />
+               </VBox.margin>
+            </Label>
+            <TableView fx:id="notFinishedTable" prefHeight="687.0" prefWidth="324.0">
+              <columns>
+                <TableColumn fx:id="nfBidNumerColumn" prefWidth="93.0" text="Lähtönumero" />
+                  <TableColumn fx:id="nfContestColumn" prefWidth="100.0" text="Sarja" />
+                <TableColumn fx:id="nfFirstNameColumn" prefWidth="56.0" text="Etunimi" />
+                  <TableColumn fx:id="nfLastNameColumn" prefWidth="123.0" text="Sukunimi" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <Label fx:id="nfCountLabel" alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="17.0" prefWidth="402.0" text="Yhteensä saapumata:" />
+         </children>
+         <padding>
+            <Insets bottom="21.0" left="21.0" right="21.0" top="6.0" />
+         </padding>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="21.0" left="21.0" right="21.0" top="21.0" />
+   </padding>
+</HBox>

@@ -1,5 +1,5 @@
 
-package DAO;
+package dao;
 
 import domain.Contest;
 import domain.Participant;
@@ -41,7 +41,9 @@ public interface ParticipantDao {
      * @param name
      * @return
      */
-    Participant findByName(String name);
+    List<Participant> findByNameLike(String name);
+    
+    Participant findByBidNumber(Integer bidNumber);
 
     /**
      *
@@ -55,5 +57,9 @@ public interface ParticipantDao {
      * @return
      */
     List<Participant> listAll();
+    
+    Integer countByContest(Contest contest);
+    
+
 }
 

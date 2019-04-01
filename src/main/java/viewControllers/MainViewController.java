@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ViewControllers;
+package viewControllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,6 +34,8 @@ public class MainViewController implements Initializable {
     Button startingListButton;
     @FXML
     Button contestsButton;
+    @FXML
+    Button raceButton;
 
     /**
      * Initializes the controller class.
@@ -49,11 +51,14 @@ public class MainViewController implements Initializable {
         startingListButton.setOnAction(event -> {
             loadListParticipantsView();
         });
+        raceButton.setOnAction(event -> {
+            loadRaceView();
+        });
     }    
     
     private void loadContestView(){
         try {
-            Parent main = FXMLLoader.load(getClass().getResource("/fxml/ContestView.fxml"));          
+            Parent main = FXMLLoader.load(getClass().getResource("/fxml/EventView.fxml"));          
             contentPane.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,6 +68,15 @@ public class MainViewController implements Initializable {
     private void loadListParticipantsView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/ListParticipantsView.fxml"));          
+            contentPane.getChildren().setAll(main);
+        } catch (IOException ex) {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void loadRaceView(){
+        try {
+            Parent main = FXMLLoader.load(getClass().getResource("/fxml/RaceView.fxml"));          
             contentPane.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);

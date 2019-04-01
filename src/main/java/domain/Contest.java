@@ -11,15 +11,20 @@ import java.util.Objects;
 public class Contest {
     private Integer id;
     private String name;
-    private Integer lenght;
-    private LocalTime startingTime;    
+    private LocalTime startingTime;     
+    private Integer numberOfParticipants;
 
     public Contest() {
         this.name = "unnamed contest";
     }
-
-    public Contest(Integer id, String name, LocalTime contestStarts) {
+    
+public Contest(Integer id, String name, LocalTime contestStarts) {
         this.id = id;
+        this.name = name;
+        this.startingTime = contestStarts;       
+    }
+
+    public Contest(String name, LocalTime contestStarts) {
         this.name = name;
         this.startingTime = contestStarts;       
     }
@@ -48,10 +53,20 @@ public class Contest {
     public void setStartingTime(LocalTime startingTime) {
         this.startingTime = startingTime;
     }
+
+    public Integer getParticipantsNumber() {
+        return numberOfParticipants;
+    }
+
+    public void setParticipantsNumber(Integer participantsNumber) {
+        this.numberOfParticipants = participantsNumber;
+    }
+    
+    
     
     @Override
     public String toString() {
-        return name + " " + startingTime.toString();
+        return name;
     }
 
     @Override

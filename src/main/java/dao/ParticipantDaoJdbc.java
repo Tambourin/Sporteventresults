@@ -1,7 +1,7 @@
 /**
  * A CRUD-class to handle Participant data
  */
-package DAO;
+package dao;
 
 import domain.Contest;
 import domain.Participant;
@@ -132,15 +132,38 @@ public class ParticipantDaoJdbc implements ParticipantDao{
      * @return
      */
     @Override
-    public Participant findByName(String name) {
+    public List<Participant> findByNameLike(String name) {
         String sqlQuery = 
                 "SELECT * FROM Participant "                
                 + "WHERE UPPER(firstName) LIKE UPPER(?) "
                 + "OR UPPER(lastName) LIKE UPPER(?)";
-        Participant participant = null;
+        List<Participant> participants = new ArrayList<>();
         try (Connection conn = DaoUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
             DaoUtil.setValues(stmt, "%" + name + "%", "%" + name + "%");
+            ResultSet rs = stmt.executeQuery();            
+            while(rs.next()) {
+                if (rs != null) {                    
+                    Participant p = prepareParticipant(rs);  
+                    participants.add(p);
+                }
+            }
+        } catch(SQLException ex){
+            ex.printStackTrace(); 
+        }
+        return participants;
+    }
+    
+    @Override
+    public Participant findByBidNumber(Integer bidNumber) {
+        if (bidNumber == null) {
+            return null;
+        }
+        String sqlQuery = "SELECT * FROM Participant WHERE bidNumber = ?";
+        Participant participant = null;
+        try (Connection conn = DaoUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
+            DaoUtil.setValues(stmt, bidNumber);
             ResultSet rs = stmt.executeQuery();
             if(!rs.next()) {
                 return null;
@@ -181,6 +204,9 @@ public class ParticipantDaoJdbc implements ParticipantDao{
      */
     @Override
     public List<Participant> listByContest(Contest contest) {
+        if (contest == null) {
+            return null;
+        }
         String sqlQuery = "SELECT * FROM Participant WHERE ContestID = ?";
         List<Participant> participants = new ArrayList<>();
         try (Connection conn = DaoUtil.getConnection();
@@ -194,8 +220,24 @@ public class ParticipantDaoJdbc implements ParticipantDao{
             ex.printStackTrace();
         }
         return participants;
+    } 
+
+    
+    public Integer countByContest(Contest contest) {
+        String sqlQuery = "SELECT COUNT(id) AS number FROM Participant WHERE ContestID = ?";
+        Integer numberOfParticipantsInContest = 0;
+        try (Connection conn = DaoUtil.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sqlQuery)) {
+            DaoUtil.setValues(stmt, contest.getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                numberOfParticipantsInContest = rs.getInt("number");                
+            }
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return numberOfParticipantsInContest;
     }
-   
     
     private Participant prepareParticipant(ResultSet rs) throws SQLException{
         Participant participant = new Participant();
@@ -215,6 +257,10 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         participant.setContest(new ContestDaoJdbc().findById(rs.getInt("contestId")));
         return participant;
     }
+
+    
+
+
 
 
 }
