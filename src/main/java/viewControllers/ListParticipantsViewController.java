@@ -1,27 +1,24 @@
 package viewControllers;
 
 
+import Services.ParticipantService;
 import dao.ContestDao;
 import dao.ContestDaoJdbc;
-import dao.ParticipantDao;
-import dao.ParticipantDaoJdbc;
 import domain.Contest;
 import domain.Participant;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,8 +36,8 @@ import javafx.stage.Stage;
  * @author Olavi
  */
 public class ListParticipantsViewController implements Initializable {    
-    private final ParticipantDao participantDao = new ParticipantDaoJdbc();
     private final ContestDao contestDao = new ContestDaoJdbc();
+    ParticipantService participantService = new ParticipantService();
     
     @FXML
     private ListView<Contest> contestList;       
@@ -63,6 +60,8 @@ public class ListParticipantsViewController implements Initializable {
     @FXML
     private Button searchButton;
     @FXML
+    private Button printButton;
+    @FXML
     private TextField searchField;
     /**
      * Initializes the controller class. 
@@ -76,62 +75,67 @@ public class ListParticipantsViewController implements Initializable {
         //Repopulate participant table if another contest is selected from the contest list  
         contestList.getSelectionModel().selectedIndexProperty()
                 .addListener((obs, oldValue, newValue) -> 
-                        populateParticipantTable(
-                        participantDao.listByContest(contestList.getSelectionModel().getSelectedItem())));          
-        //Double click on the table to open foundParticipants details
+                        refreshParticipantTable()
+        );          
+        
+        //Double click on the table to open participants details on a new window
         participantTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 showSinglePersonViewWindow(participantTable.getSelectionModel()
                         .getSelectedItem());
-            }
+            }           
         });
-        //Open foundParticipants details dialog
+        
+        //Open participants details on a new window
         editButton.setOnAction(event
                 -> showSinglePersonViewWindow(participantTable.getSelectionModel()
                         .getSelectedItem()));
+        
         //Open foundParticipants details dialog with no data to add a new participant
         addNewButton.setOnAction(event -> showSinglePersonViewWindow(null)); 
         
+        //Delete participant from database if user approves
         deleteButton.setOnAction(event -> {
                 Participant participant = 
                         participantTable.getSelectionModel().getSelectedItem();
-                if (promptDeleteParticipant(participant)) {
-                    participantDao.delete(participant.getId());
+                if (DialogUtil.promptDelete("Haluatko varmasti poistaa osanottajan " 
+                        + participant.getFirstName() + " " 
+                        + participant.getLastName() + "?")) {
+                    participantService.delete(participant);
                     refreshParticipantTable();
                 }
         });
-        
-        searchButton.setOnAction(event -> 
-                populateParticipantTable(search(searchField.getText())));
+        // Reload participant table using search criteria
+        searchButton.setOnAction(event ->
+            populateParticipantTable(
+                    participantService.findByNameOrNumber(searchField.getText())));
+        // Reload participant table using search criteria                
         searchField.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {                
                 contestList.getSelectionModel().clearSelection();
-                populateParticipantTable(search(searchField.getText()));
+                populateParticipantTable(
+                        participantService.findByNameOrNumber(searchField.getText()));
             }
         });
-    }    
-    
-    private List<Participant> search(String searchWord){       
-        List<Participant> foundParticipants = new ArrayList<>();
-        foundParticipants.addAll(participantDao.findByNameLike(searchWord));
-        try {
-            Participant p = participantDao.findByBidNumber(Integer.parseInt(searchWord));
-            foundParticipants.add(p);
-        } catch (Exception e) {
-            System.out.println("Search: not a number");
-        }       
-        return foundParticipants;
-    }
-    
+        
+        printButton.setOnAction(event -> {
+            PrinterJob job = PrinterJob.createPrinterJob();
+            job.showPrintDialog((Stage)((Node)event.getSource()).getScene().getWindow());
+            if (job != null) {
+                boolean success = job.printPage(participantTable);
+                if (success) {
+                    job.endJob();
+                }
+            }
+        });
+    }     
     
     private void refreshParticipantTable() {        
         populateParticipantTable(
-                participantDao.listByContest(
+                participantService.findByContest(
                         contestList.getSelectionModel().getSelectedItem()));
     }
-    /**
-     * Populates ListView with Contest elements from database
-     */
+
     private void populateContestList() {
         ObservableList<Contest> contests = FXCollections.observableArrayList();
         contests.addAll(contestDao.findAll());
@@ -139,10 +143,6 @@ public class ListParticipantsViewController implements Initializable {
         contestList.getSelectionModel().selectFirst();
     }
     
-    /**
-     * Populates TableView with foundParticipants
-     * @param participants Participants to show in table
-     */
     private void populateParticipantTable(List<Participant> participants) {
         if (participants == null) {
             return;
@@ -155,19 +155,7 @@ public class ListParticipantsViewController implements Initializable {
         clubColumn.setCellValueFactory(new PropertyValueFactory<>("club"));
         participantTable.setItems(ObsParticipants);  
         participantTable.refresh();
-    }
-    
-    public boolean promptDeleteParticipant(Participant participant) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Huom!");
-        alert.setHeaderText("Haluatko varmasti poistaa osanottajan " +
-                participant.getFirstName() + " " + participant.getLastName());
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {            
-            return true;
-        }  
-        return false;
-    }
+    }  
     
     /**
      * Loads resources, prepares and launches a SinglePersonView window.
@@ -193,6 +181,7 @@ public class ListParticipantsViewController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL); //Lock parent window
             stage.setScene(scene);
             stage.showAndWait();
+            System.out.println(participant);
             contestList.getSelectionModel().select(participant.getContest());
             refreshParticipantTable();
             participantTable.getSelectionModel().select(participant);

@@ -44,7 +44,7 @@
                                  </image>
                               </ImageView>
                            </graphic></Button>
-                        <Button contentDisplay="TOP" disable="true" graphicTextGap="12.0" layoutX="10.0" layoutY="272.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="247.0" text="Tulokset">
+                        <Button fx:id="resultsButton" contentDisplay="TOP" graphicTextGap="12.0" layoutX="10.0" layoutY="272.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="247.0" text="Tulokset">
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                  <image>

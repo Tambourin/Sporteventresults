@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package dao;
 
 import domain.Event;
@@ -13,11 +9,15 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
- *
+ * Dao class responsible for database operations related to event entity 
  * @author Olavi
  */
 public class EventDaoJdbc {
     
+    /**
+     * Create a record to database
+     * @param event 
+     */
     public void create(Event event) {
         String sqlQuery = "INSERT INTO Event(name, date, location, info) "
                 + "VALUES(?, ?, ?, ?)";
@@ -33,6 +33,10 @@ public class EventDaoJdbc {
         }
     }
     
+    /**
+     * Update a record in database
+     * @param event 
+     */
     public void update(Event event) {
         String sqlQuery = "UPDATE Event SET name=?, date=?, location=?, info=? "
                 + "WHERE id = ?";
@@ -48,6 +52,11 @@ public class EventDaoJdbc {
         }
     }
     
+    /**
+     * Find a record from database based on records id
+     * @param id Event id 
+     * @return Returns found event. If no event is found, return null.
+     */
     public Event findById(Integer id) {
         String sqlQuery = "SELECT * FROM Event WHERE id=?";
         Event event = null;

@@ -6,8 +6,7 @@ import java.time.LocalTime;
 
 
 /**
- *
- * @author Olavi
+ * Event. All contests are part of an event.
  */
 public class Event {
     private Integer id;

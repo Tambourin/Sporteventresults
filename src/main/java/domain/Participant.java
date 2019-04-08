@@ -2,14 +2,15 @@
 package domain;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- *
- * @author Olavi
+ * Participant takes part in contest, which in turn is part of an event.
+ * Participants in contests are unique. No participant data is saved separately.
+ * If the same participant takes part in different contest or event, new participant
+ * must be created.
  */
-public class Participant {
+public class Participant implements Comparable{
     private Integer id;
     private Integer bidNumber;
     private String firstName;
@@ -159,6 +160,15 @@ public class Participant {
         int hash = 5;
         hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o.getClass().equals(this.getClass())) {
+            Participant p = (Participant) o;
+            return (int) (this.raceResult.getSeconds()- p.raceResult.getSeconds());
+        }
+        return -1;
     }
 
     

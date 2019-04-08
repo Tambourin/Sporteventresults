@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- *
+ * Dao class responsible for database operations related to participant entity 
  * @author Olavi
  */
 public class ParticipantDaoJdbc implements ParticipantDao{
@@ -53,8 +53,8 @@ public class ParticipantDaoJdbc implements ParticipantDao{
     }
 
     /**
-     *
-     * @param participant
+     * Updates a rocord in database
+     * @param participant participant instance whose data is updated
      */
     @Override
     public void update(Participant participant){
@@ -127,9 +127,9 @@ public class ParticipantDaoJdbc implements ParticipantDao{
     }
 
     /**
-     *
+     * Seeks for a record in database where name field is like parameter
      * @param name
-     * @return
+     * @return Returns a list of participants whose name is like param
      */
     @Override
     public List<Participant> findByNameLike(String name) {
@@ -154,6 +154,11 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         return participants;
     }
     
+    /**
+     * Returns a participant whose bidnumber matches param
+     * @param bidNumber
+     * @return 
+     */
     @Override
     public Participant findByBidNumber(Integer bidNumber) {
         if (bidNumber == null) {
@@ -176,8 +181,8 @@ public class ParticipantDaoJdbc implements ParticipantDao{
     }
 
     /**
-     *
-     * @return
+     * Return a list of all participants in the database
+     * @return List of all participants
      */
     @Override
     public List<Participant> listAll() {
@@ -198,9 +203,9 @@ public class ParticipantDaoJdbc implements ParticipantDao{
     }
     
     /**
-     *
+     * Finds participants whose contest equals param
      * @param contest
-     * @return
+     * @return Returns a list of participants whose contest equals param
      */
     @Override
     public List<Participant> listByContest(Contest contest) {
@@ -222,7 +227,11 @@ public class ParticipantDaoJdbc implements ParticipantDao{
         return participants;
     } 
 
-    
+    /**
+     * Counts participants in a given contest.
+     * @param contest
+     * @return Return a number of participants in particular contest
+     */
     public Integer countByContest(Contest contest) {
         String sqlQuery = "SELECT COUNT(id) AS number FROM Participant WHERE ContestID = ?";
         Integer numberOfParticipantsInContest = 0;

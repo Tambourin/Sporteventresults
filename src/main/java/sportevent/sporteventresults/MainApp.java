@@ -1,7 +1,12 @@
 package sportevent.sporteventresults;
 
 
+import dao.DaoUtil;
+import dao.EventDaoJdbc;
+import domain.Event;
 import domain.Participant;
+import java.time.LocalDate;
+import java.time.Month;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +40,8 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        DaoUtil.initialize();        
+        new EventDaoJdbc().create(new Event("tapahtuma", "sijainti", LocalDate.of(2019, Month.MARCH, 5), "More info..."));
         launch(args);
         //ParticipantDao pDao = new ParticipantDaoJdbc();
         //ContestDao cDao = new ContestDaoJdbc();

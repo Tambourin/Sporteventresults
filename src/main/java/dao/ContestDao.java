@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package dao;
 
 import domain.Contest;
@@ -14,34 +10,37 @@ import java.util.List;
  */
 public interface ContestDao {
 
-    /**
-     *
+   /**
+     * Creates a record to database accordind to param
      * @param contest
+
      */
     void create(Contest contest);    
 
     /**
-     *
+     * Updates a database record based on param
      * @param contest
      */
     void update(Contest contest);
 
     /**
-     *
-     * @param key
+     * Deletes a database record
+     * @param key An id of record to be deleted
      */
     void delete(Integer key);
 
     /**
-     *
+     * Seeks for a contest according to it's id
      * @param key
-     * @return
+     * @return Returns the found contest. If no contest if found, returns null
      */
     Contest findById(Integer key);
 
     /**
-     *
-     * @return
+     * Finds all records in Contest table
+     * @return Returns list of all contests in database
      */
     List<Contest> findAll();
+    
 }
+

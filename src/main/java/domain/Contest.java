@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- *
+ * Contest in an event. All participants have a contest.
  * @author Olavi
  */
 public class Contest {

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package dao;
 
 import domain.Contest;
@@ -10,37 +6,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Dao class responsible for database operations related to contest entity 
  * @author Olavi
  */
 public class ContestDaoJdbc implements ContestDao{
 
     /**
-     *
+     * Creates a record to database accordind to param
      * @param contest
      */
     @Override
     public void create(Contest contest) {
         String sqlQuery = "INSERT INTO Contest(name, startingTime) VALUES (?,?)";
         try (Connection conn = DaoUtil.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
+                PreparedStatement stmt = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);) {
             String[] values = {
                 contest.getName(), contest.getStartingTime().toString()
             };
             DaoUtil.setValues(stmt, values);
             stmt.executeUpdate();
+  
         } catch(SQLException ex){
             System.out.println(ex.getMessage()); 
         }
     }
 
     /**
-     *
+     * Updates a database record based on param
      * @param contest
      */
     @Override
@@ -51,14 +49,16 @@ public class ContestDaoJdbc implements ContestDao{
             PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {            
             DaoUtil.setValues(stmt, contest.getName(), contest.getStartingTime(), contest.getId());
             stmt.executeUpdate(); 
+            
         } catch(SQLException ex){
             System.out.println(ex.getMessage()); 
         }
+      
     }
 
     /**
-     *
-     * @param key
+     * Deletes a database record
+     * @param key An id of record to be deleted
      */
     @Override
     public void delete(Integer key) {
@@ -73,9 +73,9 @@ public class ContestDaoJdbc implements ContestDao{
     }
 
     /**
-     *
+     * Seeks for a contest according to it's id
      * @param key
-     * @return
+     * @return Returns the found contest. If no contest if found, returns null
      */
     @Override
     public Contest findById(Integer key) {
@@ -96,8 +96,8 @@ public class ContestDaoJdbc implements ContestDao{
     }
 
     /**
-     *
-     * @return
+     * Finds all records in Contest table
+     * @return Returns list of all contests in database
      */
     @Override
     public List<Contest> findAll() {

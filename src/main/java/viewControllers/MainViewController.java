@@ -36,6 +36,8 @@ public class MainViewController implements Initializable {
     Button contestsButton;
     @FXML
     Button raceButton;
+    @FXML
+    Button resultsButton;
 
     /**
      * Initializes the controller class.
@@ -53,6 +55,9 @@ public class MainViewController implements Initializable {
         });
         raceButton.setOnAction(event -> {
             loadRaceView();
+        });
+        resultsButton.setOnAction(event -> {
+            loadResultsView();
         });
     }    
     
@@ -77,6 +82,15 @@ public class MainViewController implements Initializable {
     private void loadRaceView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/RaceView.fxml"));          
+            contentPane.getChildren().setAll(main);
+        } catch (IOException ex) {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void loadResultsView(){
+        try {
+            Parent main = FXMLLoader.load(getClass().getResource("/fxml/ResultsView.fxml"));          
             contentPane.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);

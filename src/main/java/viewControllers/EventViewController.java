@@ -73,12 +73,11 @@ public class EventViewController implements Initializable {
         selectedEvent = eventService.findById(1); 
         populateEventFields(selectedEvent); 
         populateContestTable();          
-        contestsTable.getSelectionModel().selectFirst();
+        contestsTable.getSelectionModel().selectFirst();        
         populateContestFields(contestsTable.getSelectionModel().getSelectedItem());
         
         contestsTable.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldValue, newValue) -> populateContestFields(newValue));
-     
+                .addListener((obs, oldValue, newValue) -> populateContestFields(newValue));     
         deleteButton.setOnAction(e -> deleteContest());
         saveButton.setOnAction(e -> updateContest());
         addNewButton.setOnAction(e -> addNewContest());        

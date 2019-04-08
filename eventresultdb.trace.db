@@ -636,3 +636,14 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:D:/Olavin ti
 	at org.h2.mvstore.FileStore.open(FileStore.java:172)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:390)
 	... 78 more
+2019-04-07 19:13:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXITS[*] EVENT(ID INTEGER PRIMARY KEY AUTO_INCREMENT,NAME VARCHAR(64),LOCATION VARCHAR(64),DATE VARCHAR(64),INFO VARCHAR(64) "; expected "EXISTS"; SQL statement:
+CREATE TABLE IF NOT EXITS Event(id INTEGER PRIMARY KEY AUTO_INCREMENT,name VARCHAR(64),location VARCHAR(64),date VARCHAR(64),info VARCHAR(64) [42001-198]
+2019-04-07 19:13:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXITS[*] CONTEST(ID INTEGER PRIMARY KEY AUTO_INCREMENT,NAME VARCHAR(64),STARTINGTIME VARCHAR(64),NUMBEROFPARTICIPANTS INTEGER) "; expected "EXISTS"; SQL statement:
+CREATE TABLE IF NOT EXITS Contest(id INTEGER PRIMARY KEY AUTO_INCREMENT,name VARCHAR(64),startingTime VARCHAR(64),numberOfParticipants INTEGER) [42001-198]
+2019-04-07 19:13:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXITS[*] PARTICIPANT(ID INTEGER PRIMARY KEY AUTO_INCREMENT,BIDNUMBER INTEGER,FIRSTNAME VARCHAR(64),LASTNAME VARCHAR(64),EMAIL VARCHAR(64),PHONE VARCHAR(64),ADDRESS VARCHAR(64),CLUB VARCHAR(64),RACERESULT VARCHAR(64),CONTEST INTEGER,FOREIGN KEY (CONTEST) REFERENCES CONTEST(ID)) "; expected "EXISTS"; SQL statement:
+CREATE TABLE IF NOT EXITS Participant(id INTEGER PRIMARY KEY AUTO_INCREMENT,bidNumber INTEGER,firstName VARCHAR(64),lastName VARCHAR(64),eMail VARCHAR(64),phone VARCHAR(64),address VARCHAR(64),club VARCHAR(64),raceResult VARCHAR(64),contest INTEGER,foreign key (contest) references Contest(id)) [42001-198]
+2019-04-08 09:22:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: No data is available [2000-198]
