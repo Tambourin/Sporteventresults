@@ -1,22 +1,18 @@
 
 package viewControllers;
 
-import dao.ContestDao;
-import dao.ContestDaoJdbc;
-import dao.EventDaoJdbc;
+import Services.ContestService;
+import Services.EventService;
 import domain.Contest;
 import domain.Event;
 import java.net.URL;
 import java.time.LocalTime;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,8 +28,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class EventViewController implements Initializable {
     
-    private final EventDaoJdbc eventDaoJdbc = new EventDaoJdbc();
-    private final ContestDao contestDao = new ContestDaoJdbc();
+    private final ContestService contestService = new ContestService();
+    private final EventService eventService = new EventService();
     
     Event selectedEvent;
     
@@ -69,47 +65,24 @@ public class EventViewController implements Initializable {
     @FXML
     Button deleteButton;
     /**
-     * Initializes the controller class. 
-
+     * Initializes the controller class. Populates tables and fields.
+     * Set event handlers
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {  
-        //LocalDate LocalDate = null;        
-        //eventDaoJdbc.create(new Event("nimi", "sijainti", LocalDate.of(2020, Month.MARCH, 5), "fff"));//
-        selectedEvent = eventDaoJdbc.findById(1); //Valitaan tässävaiheessa aina ykkönen
+        selectedEvent = eventService.findById(1); 
         populateEventFields(selectedEvent); 
-        populateTable();        
+        populateContestTable();          
         contestsTable.getSelectionModel().selectFirst();
-        populateFields(contestsTable.getSelectionModel().getSelectedItem());
+        populateContestFields(contestsTable.getSelectionModel().getSelectedItem());
         
         contestsTable.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldValue, newValue) -> populateFields(newValue));
+                .addListener((obs, oldValue, newValue) -> populateContestFields(newValue));
      
-        deleteButton.setOnAction(e -> {
-            if (deleteContest(contestsTable.getSelectionModel().getSelectedItem())){
-                populateTable();
-                contestsTable.getSelectionModel().selectLast();
-            }
-            
-        });
-        saveButton.setOnAction(e -> {
-            updateContest(contestsTable.getSelectionModel().getSelectedItem());
-            contestsTable.refresh();
-        });
-        addNewButton.setOnAction(e -> {
-            populateFields(null);
-            addNewContest();
-            populateTable();   
-            contestsTable.getSelectionModel().selectLast();
-        });
-        
-        eventSaveButton.setOnAction(e -> {
-            this.selectedEvent.setName(eventNameField.getText());
-            this.selectedEvent.setLocation(eventLocationField.getText());
-            this.selectedEvent.setDate(eventDatePicker.getValue());
-            this.selectedEvent.setInfo(eventInfoField.getText());
-            eventDaoJdbc.update(this.selectedEvent);
-        });
+        deleteButton.setOnAction(e -> deleteContest());
+        saveButton.setOnAction(e -> updateContest());
+        addNewButton.setOnAction(e -> addNewContest());        
+        eventSaveButton.setOnAction(e -> saveEvent());
     }    
     
     private void populateEventFields(Event event) {
@@ -121,16 +94,24 @@ public class EventViewController implements Initializable {
         }
     }
     
-    private void populateTable() {
+    private void saveEvent() {
+        this.selectedEvent.setName(eventNameField.getText());
+            this.selectedEvent.setLocation(eventLocationField.getText());
+            this.selectedEvent.setDate(eventDatePicker.getValue());
+            this.selectedEvent.setInfo(eventInfoField.getText());
+            eventService.update(this.selectedEvent);
+    }
+    
+    private void populateContestTable() {
         ObservableList<Contest> contests = FXCollections.<Contest>observableArrayList();
-        contests.addAll(contestDao.findAll());        
+        contests.addAll(contestService.findAll());        
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         startingTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startingTime")); 
         numOfParticipantsColumn.setCellValueFactory(new PropertyValueFactory<>("participantsNumber"));        
         contestsTable.setItems(contests);        
     }
     
-    private void populateFields(Contest contest) {
+    private void populateContestFields(Contest contest) {
         if (contest != null) {
             nameField.setText(contest.getName());
             startingTimeField.setText(contest.getStartingTime().toString());
@@ -141,37 +122,37 @@ public class EventViewController implements Initializable {
     }
     
     private void addNewContest(){                
-        if (validateFields()) {
-            Contest newContest = 
-                    new Contest(nameField.getText(), 
-                            LocalTime.parse(startingTimeField.getText()));
-            contestDao.create(newContest);
-        }                     
+        populateContestFields(null);          
+        contestService.addNew(nameField.getText(), startingTimeField.getText());
+        populateContestTable();   
+        contestsTable.getSelectionModel().selectLast();                    
     }
     
-    private void updateContest(Contest contest) {
+    private void updateContest() {    
+        if (contestsTable.getSelectionModel().getSelectedItem() == null) {
+           return;
+        } 
+        Contest contest = contestsTable.getSelectionModel().getSelectedItem();
         if (validateFields()) {
             contest.setName(nameField.getText());
             contest.setStartingTime(LocalTime.parse(startingTimeField.getText()));
-            contestDao.update(contest);
+            contestService.update(contest);
         }
+        contestsTable.refresh();
     }
     
-    private boolean deleteContest(Contest contest) {
-        if (contest.getParticipantsNumber() > 0) {
-            showErrorDialog("Et voi poistaa sarjaa, jossa on osanottajia.");
-            return false;
+    private void deleteContest() {
+        Contest contest = contestsTable.getSelectionModel().getSelectedItem();
+        String deletePromtText = "Haluatko varmasti poistaa sarjan "
+                + contest.getName() + "?";
+        if (DialogUtil.promptDelete(deletePromtText)){
+            if (contestService.delete(contest)) {
+                populateContestTable();
+                contestsTable.getSelectionModel().selectLast(); 
+            } else {
+                DialogUtil.showErrorDialog("Et voi poistaa sarjaa, jossa on osanottajia.");                
+            }            
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Huom!");
-        alert.setHeaderText("Haluatko varmasti poistaa sarjan "
-                + contest.getName() + "?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            contestDao.delete(contest.getId());
-            return true;
-        }  
-        return false;        
     }
     
     private boolean validateFields() {
@@ -189,15 +170,8 @@ public class EventViewController implements Initializable {
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            showErrorDialog(errorMessage);
+            DialogUtil.showErrorDialog(errorMessage);
             return false;
         }        
-    }
-    
-    private void showErrorDialog(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Huom!");
-        alert.setHeaderText(errorMessage);
-        alert.showAndWait();
     }
 }
