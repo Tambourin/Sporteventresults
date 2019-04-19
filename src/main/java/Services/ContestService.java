@@ -33,6 +33,10 @@ public class ContestService {
      * @param contest The contest to be deleted. 
      */
     public void update(Contest contest) {
+        if (contest == null) {
+            System.out.println("Contest null");
+            return;
+        }
         contestDao.update(contest);
     }
     

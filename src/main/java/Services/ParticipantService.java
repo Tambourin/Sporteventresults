@@ -52,24 +52,10 @@ public class ParticipantService {
     }
     
     /**
-     * Updates a participant's data in the databese
-     * @param participant Participant whose data needs to be updated
-     */
-    public void update(Participant participant) {
-        participantDao.update(participant);
-    }
-    
-    /**
-     * Creates a new participant to database
-     * @param participant Participant to be added to database 
-     */
-    public void create(Participant participant) {
-        participantDao.create(participant);
-    }
-    
-    /**
-     * Sets values to a given participant
-     * @param participant Participant where values should be set
+     * Create a new participant to database or update an existing one.
+     * If the partisipant does not have an id attribute(it is not in the database),
+     * add a new participant to database otherwise update existing one. 
+     * @param id
      * @param bidNumber
      * @param firstName
      * @param lastName
@@ -77,11 +63,13 @@ public class ParticipantService {
      * @param phone
      * @param address
      * @param club
-     * @param contest
-     */
-    public void prepareParticipant(Participant participant, String bidNumber, String firstName, 
+     * @param contest 
+     */   
+    public void save(Integer id, String bidNumber, String firstName, 
             String lastName, String email, String phone, String address, 
-            String club, Contest contest){ 
+            String club, Contest contest) {
+        Participant participant = new Participant();
+        participant.setId(id);
         participant.setBidNumber(Integer.parseInt(bidNumber));
         participant.setFirstName(firstName);
         participant.setLastName(lastName);
@@ -90,8 +78,34 @@ public class ParticipantService {
         participant.setAddress(address);
         participant.setClub(club);
         participant.setContest(contest);
+        if (id == null) {
+            participantDao.create(participant);
+        } else {
+            participantDao.update(participant);
+        }
+    }
+    
+    /**
+     * Sets participant's race result when finished the race.
+     * @param participant Partisipant who has finished
+     * @param durationString Result time in String format
+     */
+    public void addToFinished(Participant participant, String durationString){
+        Duration duration = parseDuration(durationString);
+        if (duration != null) {
+           participant.setRaceResult(duration);
+           participantDao.update(participant); 
+        }        
     }
     /**
+     * Updates a participant's data in the databese
+     * @param participant Participant whose data needs to be updated
+     */
+    public void update(Participant participant) {
+        participantDao.update(participant);
+    }
+    
+     /**
      * Returns list of all participants in database
      * @return 
      */
@@ -102,14 +116,12 @@ public class ParticipantService {
     /**
      * Checks if bidnumber is already assigned to other participant
      * @param bidNumber
-     * @return Returns true if number was already in use. Otherwise returns false; 
+     * @return Returns the participant to whom the number was associated or
+     * null if no participant with same number was found.
      */
-    public boolean bidNumberAlreadyInUse(String bidNumber){
+    public Participant bidNumberAlreadyInUse(String bidNumber){
        List<Participant> foundParticipants = findByNameOrNumber(bidNumber);
-       if (foundParticipants.isEmpty() || foundParticipants.contains(null)) {
-           return false;
-       }
-       return true;
+       return foundParticipants.get(0);
    }
     
     /**
@@ -136,4 +148,6 @@ public class ParticipantService {
             return null;
         }        
     }
+    
+
 }

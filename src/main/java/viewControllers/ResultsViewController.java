@@ -13,19 +13,13 @@ import dao.ParticipantDaoJdbc;
 import domain.Contest;
 import domain.Event;
 import domain.Participant;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
+
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.print.PageLayout;
-import javafx.print.PageOrientation;
-import javafx.print.Paper;
-import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -43,8 +37,7 @@ public class ResultsViewController implements Initializable {
     ContestDao contestDao = new ContestDaoJdbc();
     EventDaoJdbc eventDao = new EventDaoJdbc();
     
-    @FXML
-    private TextArea testiTekstiView;
+
     @FXML
     private WebView webView;
     @FXML
@@ -60,6 +53,7 @@ public class ResultsViewController implements Initializable {
             //PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
             PrinterJob job = PrinterJob.createPrinterJob();
             job.showPrintDialog((Stage)((Node)event.getSource()).getScene().getWindow());
+            
             if (job != null) {
                 boolean success = job.printPage(webView);
                 if (success) {
@@ -68,8 +62,7 @@ public class ResultsViewController implements Initializable {
             }
         });
         
-        String message = "";
-        
+        String message = "";        
         Event event = eventDao.findById(1);
         message += "<h1>" + event.getName() + " " + event.getDate() + "</h1> \n";
         message += "<b>" + event.getLocation() + "</b>";
@@ -78,6 +71,7 @@ public class ResultsViewController implements Initializable {
         for (Contest contest : contests) {
             message += "<h2>" + contest.getName() + "</h2>\n";            
             List<Participant> participants = participantDao.listByContest(contest);
+            Collections.sort(participants);
             for (int i = 0; i < participants.size(); i++) {
                 message += "<p>" + (i + 1)  + ". ";
                 message += " " + participants.get(i).getFirstName() + " ";
@@ -86,15 +80,8 @@ public class ResultsViewController implements Initializable {
                 message += " " + participants.get(i).getRaceResult() + "</p>";
             }
         }
-                
-        
         webView.getEngine().loadContent(message);
-//        try (FileWriter writer = new FileWriter("/results.html");){
-//            writer.write(message);
-//        } catch (IOException ex) {
-//            Logger.getLogger(ResultsViewController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    
     }    
+    
     
 }

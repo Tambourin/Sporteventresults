@@ -114,29 +114,29 @@ public class RaceViewController implements Initializable {
         } else if(participant.getRaceResult() != Duration.ZERO) {
             DialogUtil.showErrorDialog("Kilpailija on jo maalissa!");                
         } else {
-            Duration duration = participantService.parseDuration(timeField.getText());
-            if (duration != null) {
-                participant.setRaceResult(duration);
-                participantService.update(participant);
-                populateTables();
-                bidNumberField.setText("");
-                timeField.setText("");
-            }
+            participantService.addToFinished(participant, timeField.getText());
+            populateTables();
+            bidNumberField.setText("");
+            timeField.setText("");
         }
     }
     
     private void removeFromFinished() {
         Participant participant = finishedTable.getSelectionModel().getSelectedItem();
-            String message = "Haluatko varmasti poistaa osanottajan " 
-                + participant.getFirstName() + " "
-                + participant.getLastName() + " " 
-                + participant.getBidNumber() + " " 
-                + "maaliintulleista?";
-            if (DialogUtil.promptDelete(message)) {
-                participant.setRaceResult(Duration.ZERO);
-                participantService.update(participant);
-                populateTables();
-            }
+        if (participant == null) {
+            DialogUtil.showErrorDialog("Ei valittua osanottajaa");
+            return;
+        }
+        String message = "Haluatko varmasti poistaa osanottajan " 
+            + participant.getFirstName() + " "
+            + participant.getLastName() + " " 
+            + participant.getBidNumber() + " " 
+            + "maaliintulleista?";
+        if (DialogUtil.promptDelete(message)) {
+            participant.setRaceResult(Duration.ZERO);
+            participantService.update(participant);
+            populateTables();
+        }
     }
     
     private boolean fieldsAreValid(){

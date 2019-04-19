@@ -115,20 +115,21 @@ public class EventViewController implements Initializable {
             nameField.setText(contest.getName());
             startingTimeField.setText(contest.getStartingTime().toString());
         } else {
-            nameField.setText("Uusi sarja");            
-            startingTimeField.setText("00:00");
+            nameField.setText("");            
+            startingTimeField.setText("");
         }
     }
     
     private void addNewContest(){                
-        populateContestFields(null);          
-        contestService.addNew(nameField.getText(), startingTimeField.getText());
+        //populateContestFields(null);          
+        contestService.addNew("Uusi sarja", "00:00");
         populateContestTable();   
         contestsTable.getSelectionModel().selectLast();                    
     }
     
     private void updateContest() {    
         if (contestsTable.getSelectionModel().getSelectedItem() == null) {
+           DialogUtil.showErrorDialog("Lisää ensin uusi sarja!");
            return;
         } 
         Contest contest = contestsTable.getSelectionModel().getSelectedItem();
@@ -142,6 +143,10 @@ public class EventViewController implements Initializable {
     
     private void deleteContest() {
         Contest contest = contestsTable.getSelectionModel().getSelectedItem();
+        if (contest == null) {
+            DialogUtil.showErrorDialog("Ei valittua tapahtumaa!");
+            return;
+        }
         String deletePromtText = "Haluatko varmasti poistaa sarjan "
                 + contest.getName() + "?";
         if (DialogUtil.promptDelete(deletePromtText)){

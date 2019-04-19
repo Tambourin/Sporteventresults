@@ -8,6 +8,7 @@ import domain.Contest;
 import domain.Participant;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -86,27 +87,24 @@ public class SinglePersonViewController implements Initializable {
         clubField.setText(participant.getClub());                
     }  
     
-    //If the partisipant does not have an id attribute(it is not in the database),
-    //add a new participant to database otherwise update existing one.
+    /**
+     * Takes content of each field and sends the values update or create new
+     * @param event action event. Used to close the right window after task done.
+     */
     private void saveParticipant(Event event) {
         if (participantFieldsAreValid()) {
-                participantService.prepareParticipant(
-                        this.participant,
-                        bidNumberField.getText(),
-                        firstNameField.getText(),
-                        lastNameField.getText(),
-                        emailField.getText(),
-                        phoneField.getText(),
-                        addressField.getText(),
-                        clubField.getText(),
-                        contestChoice.getSelectionModel().getSelectedItem());
-                if (this.participant.getId() == null) {  
-                    participantService.create(this.participant);
-                } else {
-                    participantService.update(this.participant);
-                }
-                DialogUtil.closeWindow(event);
-            }
+            participantService.save(
+                    this.participant.getId(),
+                    bidNumberField.getText(),
+                    firstNameField.getText(),
+                    lastNameField.getText(),
+                    emailField.getText(),
+                    phoneField.getText(),
+                    addressField.getText(),
+                    clubField.getText(),
+                    contestChoice.getSelectionModel().getSelectedItem());
+            DialogUtil.closeWindow(event);
+        }
     }
     
     private void deleteParticipant(Event event) {
@@ -127,7 +125,8 @@ public class SinglePersonViewController implements Initializable {
             errorMessage += "Lähtönumerokenttä on tyhjä ";
         } else if(!bidNumberField.getText().matches("[0-9]+")) {
             errorMessage += "Tarkista lähtönumero ";
-        } else if(participantService.bidNumberAlreadyInUse(bidNumberField.getText())) {
+        } else if(!Objects.equals(participantService.bidNumberAlreadyInUse(bidNumberField.getText()).getId(), this.participant.getId())
+                && participantService.bidNumberAlreadyInUse(bidNumberField.getText()) != null) {
             errorMessage += "Lähtönumero on jo käytössä";
         }
         

@@ -57,7 +57,7 @@
                         </Button>
                      </children>
                   </HBox>
-                  <TableView fx:id="participantTable" focusTraversable="false" prefHeight="700.0" tableMenuButtonVisible="true">
+                  <TableView fx:id="participantTable" focusTraversable="false" prefHeight="630.0" prefWidth="800.0" tableMenuButtonVisible="true">
                     <columns>
                         <TableColumn fx:id="bidNumberColumn" prefWidth="75.0" text="Kilpailunumero" />
                       <TableColumn fx:id="firstNameColumn" prefWidth="86.0" text="Etunimi" />

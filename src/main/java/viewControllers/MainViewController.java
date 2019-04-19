@@ -25,19 +25,26 @@ import javafx.scene.layout.AnchorPane;
  */
 public class MainViewController implements Initializable {
 
-    @FXML
-    AnchorPane contentPane;
+
     @FXML
     AnchorPane menuPane;
+    @FXML
+    AnchorPane anchorPane1;
+    @FXML
+    AnchorPane anchorPane2;
+    @FXML
+    AnchorPane anchorPane3;
+    @FXML
+    AnchorPane anchorPane4;
     
-    @FXML
-    Button startingListButton;
-    @FXML
-    Button contestsButton;
-    @FXML
-    Button raceButton;
-    @FXML
-    Button resultsButton;
+//    @FXML
+//    Button startingListButton;
+//    @FXML
+//    Button contestsButton;
+//    @FXML
+//    Button raceButton;
+//    @FXML
+//    Button resultsButton;
 
     /**
      * Initializes the controller class.
@@ -47,24 +54,28 @@ public class MainViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {        
         //loadSinglePersonView();
-        contestsButton.setOnAction(event -> {
-            loadContestView();
-        });
-        startingListButton.setOnAction(event -> {
-            loadListParticipantsView();
-        });
-        raceButton.setOnAction(event -> {
-            loadRaceView();
-        });
-        resultsButton.setOnAction(event -> {
-            loadResultsView();
-        });
+        loadContestView();
+        loadListParticipantsView();
+        loadRaceView();
+        loadResultsView();
+//        contestsButton.setOnAction(event -> {
+//            loadContestView();
+//        });
+//        startingListButton.setOnAction(event -> {
+//            loadListParticipantsView();
+//        });
+//        raceButton.setOnAction(event -> {
+//            loadRaceView();
+//        });
+//        resultsButton.setOnAction(event -> {
+//            loadResultsView();
+//        });
     }    
     
     private void loadContestView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/EventView.fxml"));          
-            contentPane.getChildren().setAll(main);
+            anchorPane1.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -73,7 +84,7 @@ public class MainViewController implements Initializable {
     private void loadListParticipantsView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/ListParticipantsView.fxml"));          
-            contentPane.getChildren().setAll(main);
+            anchorPane2.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,7 +93,7 @@ public class MainViewController implements Initializable {
     private void loadRaceView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/RaceView.fxml"));          
-            contentPane.getChildren().setAll(main);
+            anchorPane3.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -91,7 +102,7 @@ public class MainViewController implements Initializable {
     private void loadResultsView(){
         try {
             Parent main = FXMLLoader.load(getClass().getResource("/fxml/ResultsView.fxml"));          
-            contentPane.getChildren().setAll(main);
+            anchorPane4.getChildren().setAll(main);
         } catch (IOException ex) {
             Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }

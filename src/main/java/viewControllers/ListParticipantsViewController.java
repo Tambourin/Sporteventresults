@@ -94,17 +94,7 @@ public class ListParticipantsViewController implements Initializable {
         //Open foundParticipants details dialog with no data to add a new participant
         addNewButton.setOnAction(event -> showSinglePersonViewWindow(null)); 
         
-        //Delete participant from database if user approves
-        deleteButton.setOnAction(event -> {
-                Participant participant = 
-                        participantTable.getSelectionModel().getSelectedItem();
-                if (DialogUtil.promptDelete("Haluatko varmasti poistaa osanottajan " 
-                        + participant.getFirstName() + " " 
-                        + participant.getLastName() + "?")) {
-                    participantService.delete(participant);
-                    refreshParticipantTable();
-                }
-        });
+        deleteButton.setOnAction(event -> deleteParticipant());
         // Reload participant table using search criteria
         searchButton.setOnAction(event ->
             populateParticipantTable(
@@ -156,6 +146,22 @@ public class ListParticipantsViewController implements Initializable {
         participantTable.setItems(ObsParticipants);  
         participantTable.refresh();
     }  
+    
+    //Delete participant if user approves
+    private void deleteParticipant() {
+        Participant participant = 
+                participantTable.getSelectionModel().getSelectedItem();
+        if (participant == null) {
+            DialogUtil.showErrorDialog("Ei valittua osanottajaa");
+            return;
+        }
+        if (DialogUtil.promptDelete("Haluatko varmasti poistaa osanottajan " 
+                + participant.getFirstName() + " " 
+                + participant.getLastName() + "?")) {
+            participantService.delete(participant);
+            refreshParticipantTable();
+        }
+    }
     
     /**
      * Loads resources, prepares and launches a SinglePersonView window.
