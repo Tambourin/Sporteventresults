@@ -14,11 +14,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 
 
 /**
@@ -52,26 +54,31 @@ public class EventViewController implements Initializable {
     TableColumn<Contest, String> startingTimeColumn;
     @FXML
     TableColumn<Contest, Integer> numOfParticipantsColumn;
-    
+
+    @FXML
+    VBox contestFieldsContainer;    
     @FXML
     TextField nameField;
     @FXML
     TextField startingTimeField;
-    
+
     @FXML
     Button addNewButton;
     @FXML
     Button saveButton;
     @FXML
     Button deleteButton;
+    
+    @FXML
+    Hyperlink changeEventLink;
     /**
      * Initializes the controller class. Populates tables and fields.
-     * Set event handlers
+     * Sets event handlers
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {  
-        selectedEvent = eventService.findById(1); 
-        populateEventFields(selectedEvent); 
+        //selectedEvent = eventService.findById(1); 
+        //populateEventFields(selectedEvent); 
         populateContestTable();          
         contestsTable.getSelectionModel().selectFirst();        
         populateContestFields(contestsTable.getSelectionModel().getSelectedItem());
@@ -84,6 +91,18 @@ public class EventViewController implements Initializable {
         eventSaveButton.setOnAction(e -> saveEvent());
     }    
     
+     /**
+     * Sets Selected event. This method is called when this view is loaded
+     * from another view.
+     * @param event Event that is assigned to selectedEvent
+     */
+    public void setSelectedEvent(Event event) {
+        this.selectedEvent = event;
+        System.out.println("EventView, Selected event is:" + this.selectedEvent);
+        populateEventFields(event);
+        populateContestTable();
+    }
+    
     private void populateEventFields(Event event) {
         if (event != null) {
             eventNameField.setText(event.getName());
@@ -95,15 +114,19 @@ public class EventViewController implements Initializable {
     
     private void saveEvent() {
         this.selectedEvent.setName(eventNameField.getText());
-            this.selectedEvent.setLocation(eventLocationField.getText());
-            this.selectedEvent.setDate(eventDatePicker.getValue());
-            this.selectedEvent.setInfo(eventInfoField.getText());
-            eventService.update(this.selectedEvent);
+        this.selectedEvent.setLocation(eventLocationField.getText());
+        this.selectedEvent.setDate(eventDatePicker.getValue());
+        this.selectedEvent.setInfo(eventInfoField.getText());
+        eventService.update(this.selectedEvent);
     }
     
     private void populateContestTable() {
+        if( selectedEvent == null) {
+            System.out.println("SelectedEvent not available");
+            return;
+        }
         ObservableList<Contest> contests = FXCollections.<Contest>observableArrayList();
-        contests.addAll(contestService.findAll());        
+        contests.addAll(contestService.findAllByEvent(selectedEvent));        
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         startingTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startingTime")); 
         numOfParticipantsColumn.setCellValueFactory(new PropertyValueFactory<>("participantsNumber"));        
@@ -114,17 +137,19 @@ public class EventViewController implements Initializable {
         if (contest != null) {
             nameField.setText(contest.getName());
             startingTimeField.setText(contest.getStartingTime().toString());
+            contestFieldsContainer.setDisable(false);
         } else {
             nameField.setText("");            
             startingTimeField.setText("");
+            System.out.println("Contest is null");
+            contestFieldsContainer.setDisable(true);
         }
     }
     
-    private void addNewContest(){                
-        //populateContestFields(null);          
-        contestService.addNew("Uusi sarja", "00:00");
+    private void addNewContest(){                          
+        contestService.addNew("Uusi sarja", "00:00", this.selectedEvent);
         populateContestTable();   
-        contestsTable.getSelectionModel().selectLast();                    
+        contestsTable.getSelectionModel().selectLast();          
     }
     
     private void updateContest() {    
