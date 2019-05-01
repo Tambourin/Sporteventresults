@@ -2,7 +2,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 
 /**
@@ -76,6 +75,9 @@ public class Event {
         this.info = info;
     }
     
-    
+    @Override
+    public String toString() {
+        return this.name + ", " + this.date;
+    }
     
 }

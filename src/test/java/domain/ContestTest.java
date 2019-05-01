@@ -5,6 +5,8 @@
  */
 package domain;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,13 +18,13 @@ import static org.junit.Assert.*;
  */
 public class ContestTest {
     Contest instance;
-    
+    Event event = new Event("name", "location", LocalDate.now(), "info");
     public ContestTest() {
     }
     
     @Before
     public void setUp() {
-        instance = new Contest(1, "Hölkkä", LocalTime.of(20, 30));
+        instance = new Contest(1, "Hölkkä", LocalTime.of(20, 30), event);
     }
 
 
@@ -108,6 +110,13 @@ public class ContestTest {
         assertEquals(expResult, instance.getStartingTime());
     }
 
+//    @Test
+//    public void testGetParticipantsNumber() {
+//        Integer num = instance.getParticipantsNumber();
+//        Participant p = new Participant(22, "firstName", "lastName", "eMail", "phone", "address", "club", Duration.ZERO, instance);
+//        Integer num2 = instance.getParticipantsNumber();
+//        assertTrue(num.equals(num2 - 1));
+//    }
 
     /**
      * Test of toString method, of class Contest.
@@ -119,6 +128,21 @@ public class ContestTest {
         String result = instance.toString();
         assertEquals(expResult, result);
 
+    }
+    
+    @Test
+    public void equalsTest() {
+        assertFalse(instance.equals(null));        
+    }
+
+    @Test
+    public void equalsTestNotSameClass() {
+        assertFalse(instance.equals("String"));
+    }
+
+    @Test
+    public void equalsTestNotSameContest() {
+        assertFalse(instance.equals(new Contest(304957, "name", LocalTime.now(), event)));
     }
     
 }

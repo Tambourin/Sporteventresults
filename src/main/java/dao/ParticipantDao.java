@@ -2,6 +2,7 @@
 package dao;
 
 import domain.Contest;
+import domain.Event;
 import domain.Participant;
 import java.util.*;
 
@@ -15,8 +16,9 @@ public interface ParticipantDao {
      * Inserts a record into the Participant table using values of
      * paticipant object that is passed to the method.
      * @param participant Participant whose values are inserted into table.
+     * @return Returns the id of created participant
      */
-    void create(Participant participant);    
+    Integer create(Participant participant);    
 
     /**
      * Updates a rocord in database
@@ -42,14 +44,14 @@ public interface ParticipantDao {
      * @param name
      * @return Returns a list of participants whose name is like param
      */
-    List<Participant> findByNameLike(String name);
+    List<Participant> findByNameLike(String name, Event event);
     
     /**
      * Returns a participant whose bidnumber matches param
      * @param bidNumber
      * @return 
      */
-    Participant findByBidNumber(Integer bidNumber);
+    Participant findByBidNumber(Integer bidNumber, Event event);
 
     /**
      * Finds participants whose contest equals param

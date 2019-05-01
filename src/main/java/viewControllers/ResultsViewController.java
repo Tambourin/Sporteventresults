@@ -14,7 +14,9 @@ import domain.Contest;
 import domain.Event;
 import domain.Participant;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
+import java.util.Iterator;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -23,9 +25,9 @@ import javafx.fxml.Initializable;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+
 
 /**
  * FXML Controller class
@@ -37,6 +39,7 @@ public class ResultsViewController implements Initializable {
     ContestDao contestDao = new ContestDaoJdbc();
     EventDaoJdbc eventDao = new EventDaoJdbc();
     
+    private Event selectedEvent;
 
     @FXML
     private WebView webView;
@@ -48,9 +51,7 @@ public class ResultsViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        printButton.setOnAction(event -> {
-            //Printer printer = Printer.getDefaultPrinter();
-            //PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
+        printButton.setOnAction(event -> {        
             PrinterJob job = PrinterJob.createPrinterJob();
             job.showPrintDialog((Stage)((Node)event.getSource()).getScene().getWindow());
             
@@ -62,26 +63,41 @@ public class ResultsViewController implements Initializable {
             }
         });
         
+    }    
+    
+    /**
+     * Sets Selected event. This method is called when this view is loaded
+     * from another view. 
+     * @param event Event that is assigned to selectedEvent
+     */
+    public void setSelectedEvent(Event event) {
+        this.selectedEvent = event;
+        constructHTML();
+    }
+    
+    private void constructHTML() {
         String message = "";        
-        Event event = eventDao.findById(1);
+        Event event = eventDao.findById(selectedEvent.getId());
         message += "<h1>" + event.getName() + " " + event.getDate() + "</h1> \n";
         message += "<b>" + event.getLocation() + "</b>";
+        message += "<p>" + event.getInfo() + "</p>";
         
-        List<Contest> contests = contestDao.findAll();
+        List<Contest> contests = contestDao.findAllByEvent(event);
         for (Contest contest : contests) {
             message += "<h2>" + contest.getName() + "</h2>\n";            
+            
             List<Participant> participants = participantDao.listByContest(contest);
-            Collections.sort(participants);
-            for (int i = 0; i < participants.size(); i++) {
+            participants.removeIf(participant -> participant.getRaceResult().equals(Duration.ZERO));
+            
+            Collections.sort(participants);            
+            for (int i = 0; i < participants.size(); i++) {                
                 message += "<p>" + (i + 1)  + ". ";
                 message += " " + participants.get(i).getFirstName() + " ";
                 message += " " + participants.get(i).getLastName() + " ";
                 message += " [" + participants.get(i).getBidNumber() + "] ";
-                message += " " + participants.get(i).getRaceResult() + "</p>";
+                message += " " + participants.get(i).getRaceResult() + "</p>";                                
             }
         }
         webView.getEngine().loadContent(message);
-    }    
-    
-    
+    }
 }

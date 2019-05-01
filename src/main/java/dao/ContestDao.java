@@ -2,6 +2,7 @@
 package dao;
 
 import domain.Contest;
+import domain.Event;
 import java.util.List;
 
 /**
@@ -13,9 +14,9 @@ public interface ContestDao {
    /**
      * Creates a record to database accordind to param
      * @param contest
-
+     * @return Returns id of created Contest
      */
-    void create(Contest contest);    
+    Integer create(Contest contest);    
 
     /**
      * Updates a database record based on param
@@ -42,5 +43,6 @@ public interface ContestDao {
      */
     List<Contest> findAll();
     
+    List<Contest> findAllByEvent(Event event);
 }
 

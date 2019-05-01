@@ -15,16 +15,17 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewControllers.EventViewController">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1052.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewControllers.EventViewController">
    <children>
-      <HBox fillHeight="false" prefHeight="719.0" prefWidth="1010.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="0.0">
+      <HBox fillHeight="false" layoutX="21.0" prefHeight="689.0" prefWidth="1010.0" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="21.0">
          <children>
             <VBox prefHeight="650.0" prefWidth="317.0" spacing="6.0">
                <children>
                   <Label text="Tapahtuman tiedot">
                      <VBox.margin>
                         <Insets bottom="21.0" />
-                     </VBox.margin></Label>
+                     </VBox.margin>
+                  </Label>
                   <Label layoutX="10.0" layoutY="10.0" text="Tapahtuman nimi" />
                   <TextField fx:id="eventNameField" />
                   <Label layoutX="10.0" layoutY="27.0" text="Sijainti" />
@@ -34,7 +35,7 @@
                   <Label layoutX="10.0" layoutY="195.0" text="Tapahtuma info" />
                   <TextArea fx:id="eventInfoField" prefHeight="251.0" prefWidth="167.0" />
                   <Button fx:id="eventSaveButton" mnemonicParsing="false" text="Tallenna" />
-                  <Hyperlink text="Vaihda tapahtumaa" />
+                  <Hyperlink fx:id="changeEventLink" text="Vaihda tapahtumaa" />
                </children>
                <opaqueInsets>
                   <Insets bottom="21.0" left="21.0" right="21.0" top="6.0" />
@@ -52,34 +53,38 @@
                   <Label prefHeight="17.0" prefWidth="66.0" text="Sarjat">
                      <VBox.margin>
                         <Insets bottom="21.0" />
-                     </VBox.margin></Label>
-                  <TableView fx:id="contestsTable" prefHeight="309.0" prefWidth="591.0">
+                     </VBox.margin>
+                  </Label>
+                  <TableView fx:id="contestsTable" prefHeight="309.0" prefWidth="581.0">
                     <columns>
                       <TableColumn fx:id="nameColumn" prefWidth="225.0" resizable="false" text="Nimi" />
                       <TableColumn fx:id="distanceColumn" minWidth="0.0" prefWidth="78.0" resizable="false" text="Matka" />
                         <TableColumn fx:id="startingTimeColumn" prefWidth="157.0" resizable="false" text="Lähtöaika" />
-                        <TableColumn fx:id="numOfParticipantsColumn" prefWidth="135.0" resizable="false" text="Ilmoittautuneita" />
+                        <TableColumn fx:id="numOfParticipantsColumn" prefWidth="132.0" resizable="false" text="Ilmoittautuneita" />
                     </columns>
                   </TableView>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0">
                     <buttons>
-                      <Button fx:id="addNewButton" mnemonicParsing="false" text="Lisää uusi" />
+                      <Button fx:id="addNewButton" mnemonicParsing="false" styleClass="main-button" text="Lisää uusi" />
                         <Button fx:id="deleteButton" mnemonicParsing="false" text="Poista" />
                     </buttons>
                   </ButtonBar>
-                  <VBox>
+                  <VBox fx:id="contestFieldsContainer" spacing="6.0">
                      <children>
                         <Label text="Sarjan tiedot">
                            <VBox.margin>
-                              <Insets bottom="21.0" />
+                              <Insets />
                            </VBox.margin>
                         </Label>
                         <Label text="Nimi*" />
                         <TextField fx:id="nameField" promptText="Sarjan nimi. Esim. 'Naiset 16'." />
-                        <Label text="Matka" />
-                        <TextField fx:id="distanceField" />
                         <Label text="Lähtöaika" />
                         <TextField fx:id="startingTimeField" promptText="Sarjan lähtöaika esim. '12:30'" />
+                        <ButtonBar prefHeight="40.0" prefWidth="634.0">
+                          <buttons>
+                            <Button fx:id="saveButton" mnemonicParsing="false" text="Tallenna" />
+                          </buttons>
+                        </ButtonBar>
                      </children>
                      <padding>
                         <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
@@ -88,11 +93,6 @@
                         <Insets top="12.0" />
                      </VBox.margin>
                   </VBox>
-                  <ButtonBar prefHeight="40.0" prefWidth="634.0">
-                    <buttons>
-                      <Button fx:id="saveButton" mnemonicParsing="false" text="Tallenna" />
-                    </buttons>
-                  </ButtonBar>
                </children>
                <opaqueInsets>
                   <Insets bottom="21.0" left="21.0" right="21.0" top="21.0" />
@@ -106,7 +106,7 @@
             </VBox>
          </children>
          <padding>
-            <Insets left="21.0" />
+            <Insets top="21.0" />
          </padding>
       </HBox>
    </children>

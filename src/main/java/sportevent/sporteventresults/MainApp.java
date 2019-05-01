@@ -22,7 +22,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));        
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/chooseEvent.fxml"));        
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
         
@@ -41,7 +41,7 @@ public class MainApp extends Application {
      */
     public static void main(String[] args) {
         DaoUtil.initialize();        
-        new EventDaoJdbc().create(new Event("tapahtuma", "sijainti", LocalDate.of(2019, Month.MARCH, 5), "More info..."));
+        //new EventDaoJdbc().create(new Event("tapahtuma", "sijainti", LocalDate.of(2019, Month.MARCH, 5), "More info..."));
         launch(args);
         //ParticipantDao pDao = new ParticipantDaoJdbc();
         //ContestDao cDao = new ContestDaoJdbc();

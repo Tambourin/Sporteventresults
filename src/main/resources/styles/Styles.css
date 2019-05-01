@@ -1,3 +1,24 @@
-.button {
-    -fx-font-weight: bold;
+.menu-button{
+    -fx-background-color: #2B579A; 
+    -fx-border-radius:  0px;
+    -fx-background-radius: 0px;
+    -fx-text-fill: white ;
+}
+.menu-button:hover {
+    -fx-background-color: #3b6bb7 ;
+}
+
+
+.main-button{
+    -fx-background-color: #2B579A; 
+    -fx-text-fill: white ;
+}
+.main-button:hover{
+    -fx-background-color: #3b6bb7 ;
+}
+
+
+.root {
+    -fx-accent: #2B579A;
+    -fx-focus-color: #2B579A;
 }

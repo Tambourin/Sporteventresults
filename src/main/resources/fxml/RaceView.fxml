@@ -23,7 +23,7 @@
             <TextField fx:id="bidNumberField" />
             <Label layoutX="10.0" layoutY="10.0" text="Aika" />
             <TextField fx:id="timeField" layoutX="10.0" layoutY="27.0" promptText="Aika muotoa: 1:05:32" />
-            <Button fx:id="addButton" mnemonicParsing="false" text="Lisää" />
+            <Button fx:id="addButton" mnemonicParsing="false" styleClass="main-button" text="Lisää" />
          </children>
          <padding>
             <Insets bottom="21.0" left="21.0" right="21.0" top="6.0" />

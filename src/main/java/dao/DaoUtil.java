@@ -60,8 +60,10 @@ public class DaoUtil {
         String createContest = "CREATE TABLE IF NOT EXISTS Contest("
                 + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
                 + "name VARCHAR(64),"
-                + "startingTime VARCHAR(64),"
-                + "numberOfParticipants INTEGER)";
+                + "startingTime VARCHAR(64),"                
+                + "numberOfParticipants INTEGER,"
+                + "eventId INTEGER,"
+                + "foreign key (eventId) references Event(id))";
         try (Connection conn = DaoUtil.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(createContest);) {  
             stmt.executeUpdate();

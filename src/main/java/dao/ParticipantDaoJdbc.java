@@ -4,11 +4,13 @@
 package dao;
 
 import domain.Contest;
+import domain.Event;
 import domain.Participant;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +27,15 @@ public class ParticipantDaoJdbc implements ParticipantDao{
      * Inserts a record into the Participant table using values of
      * paticipant object that is passed to the method.
      * @param participant Participant whose values are inserted into table.
+     * @return Returns the id of created participant
      */
     @Override
-    public void create(Participant participant) {
+    public Integer create(Participant participant) {
         String sqlQuery = 
                 "INSERT INTO "
                 + "Participant(bidNumber, firstName, lastName, eMail, phone, address, club, raceResult, contestId) "
                 + "VALUES(?,?,?,?,?,?,?,?,?)";
+        Integer id = null;
         Object[] values = {
             participant.getBidNumber(),
             participant.getFirstName(),
@@ -44,12 +48,20 @@ public class ParticipantDaoJdbc implements ParticipantDao{
             participant.getContest().getId()                
         };           
         try (Connection conn = DaoUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sqlQuery);){ 
+            PreparedStatement stmt = 
+                    conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);){ 
             DaoUtil.setValues(stmt, values);            
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
+            
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if(generatedKeys.next()) {
+                id = generatedKeys.getInt(1);
+            }
+            
         } catch(SQLException ex){
             System.out.println(ex.getMessage()); 
         }
+        return id;
     }
 
     /**
@@ -132,15 +144,18 @@ public class ParticipantDaoJdbc implements ParticipantDao{
      * @return Returns a list of participants whose name is like param
      */
     @Override
-    public List<Participant> findByNameLike(String name) {
+    public List<Participant> findByNameLike(String name, Event event) {
         String sqlQuery = 
-                "SELECT * FROM Participant "                
+                "SELECT * FROM Participant "
+                + "JOIN Contest ON Participant.contestId = Contest.id "
+                + "JOIN Event On Contest.eventId = Event.id "                
                 + "WHERE UPPER(firstName) LIKE UPPER(?) "
-                + "OR UPPER(lastName) LIKE UPPER(?)";
+                + "OR UPPER(lastName) LIKE UPPER(?) "
+                + "AND Event.id = ?";
         List<Participant> participants = new ArrayList<>();
         try (Connection conn = DaoUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
-            DaoUtil.setValues(stmt, "%" + name + "%", "%" + name + "%");
+            DaoUtil.setValues(stmt, "%" + name + "%", "%" + name + "%", event.getId());
             ResultSet rs = stmt.executeQuery();            
             while(rs.next()) {
                 if (rs != null) {                    
@@ -160,15 +175,18 @@ public class ParticipantDaoJdbc implements ParticipantDao{
      * @return 
      */
     @Override
-    public Participant findByBidNumber(Integer bidNumber) {
+    public Participant findByBidNumber(Integer bidNumber, Event event) {
         if (bidNumber == null) {
             return null;
         }
-        String sqlQuery = "SELECT * FROM Participant WHERE bidNumber = ?";
+        String sqlQuery = "SELECT * FROM Participant "
+                + "JOIN Contest ON Participant.contestId = Contest.id "
+                + "JOIN Event ON Contest.eventId = Event.id "
+                + "WHERE bidNumber = ? AND Event.id = ?";
         Participant participant = null;
         try (Connection conn = DaoUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlQuery);) {
-            DaoUtil.setValues(stmt, bidNumber);
+            DaoUtil.setValues(stmt, bidNumber, event.getId());
             ResultSet rs = stmt.executeQuery();
             if(!rs.next()) {
                 return null;

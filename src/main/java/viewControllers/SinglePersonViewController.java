@@ -8,7 +8,6 @@ import domain.Contest;
 import domain.Participant;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -27,7 +26,6 @@ import javafx.scene.control.TextField;
  */
 public class SinglePersonViewController implements Initializable {
     
-    private final ContestDao contestDao = new ContestDaoJdbc();
     private final ParticipantService participantService = new ParticipantService();
     
     private Participant participant; //Participant that is being edited
@@ -70,14 +68,17 @@ public class SinglePersonViewController implements Initializable {
      * Fills fields with data.
      * @param participant Participant whose data is used to fill the fields. 
      * If parameter is null, a new participant is created intead.
+     * @param contests whitch contests are loaded to choiceBox.
      */    
-    public void populateFields(Participant participant) {
+    public void populateFields(Participant participant, List<Contest> contests) {
         if (participant == null) {
             participant = new Participant();
         }
-        this.participant = participant;        
-        contestChoice.getItems().addAll(contestDao.findAll());        
-        contestChoice.getSelectionModel().select(participant.getContest()); // Select participant's contest from the choicebox
+        this.participant = participant;           
+        Contest selectedContest = participant.getContest();
+
+        contestChoice.getItems().addAll(contests);        
+        contestChoice.getSelectionModel().select(selectedContest); // Select participant's contest from the choicebox
         bidNumberField.setText(participant.getBidNumber().toString());
         firstNameField.setText(participant.getFirstName());
         lastNameField.setText(participant.getLastName());
@@ -88,7 +89,8 @@ public class SinglePersonViewController implements Initializable {
     }  
     
     /**
-     * Takes content of each field and sends the values update or create new
+     * Takes content of each field and sends the values to 
+     * update or create a new participant.
      * @param event action event. Used to close the right window after task done.
      */
     private void saveParticipant(Event event) {
@@ -125,9 +127,11 @@ public class SinglePersonViewController implements Initializable {
             errorMessage += "Lähtönumerokenttä on tyhjä ";
         } else if(!bidNumberField.getText().matches("[0-9]+")) {
             errorMessage += "Tarkista lähtönumero ";
-        } else if(!Objects.equals(participantService.bidNumberAlreadyInUse(bidNumberField.getText()).getId(), this.participant.getId())
-                && participantService.bidNumberAlreadyInUse(bidNumberField.getText()) != null) {
-            errorMessage += "Lähtönumero on jo käytössä";
+        } else if(contestChoice.getSelectionModel().getSelectedItem() != null) { //only check bidNumberAlreadyInUse if some contest is selected
+            this.participant.setContest(contestChoice.getSelectionModel().getSelectedItem());
+            if(participantService.bidNumberAlreadyInUse(bidNumberField.getText(), this.participant)){                
+                errorMessage += "Lähtönumero on jo käytössä";
+            }
         }
         
         if(firstNameField.getText() == null || 
@@ -138,9 +142,9 @@ public class SinglePersonViewController implements Initializable {
                 lastNameField.getText().length() == 0){
             errorMessage += "Sukunimikenttä on tyhjä ";
         }
-        Contest selectedContest = 
-                contestChoice.getSelectionModel().getSelectedItem();
-        if (selectedContest == null) {
+//        Contest selectedContest = 
+//                contestChoice.getSelectionModel().getSelectedItem();
+        if (contestChoice.getSelectionModel().getSelectedItem() == null) {
             errorMessage += "Valitse sarja! ";
         }        
         

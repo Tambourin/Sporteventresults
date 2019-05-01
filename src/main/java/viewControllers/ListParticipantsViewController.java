@@ -5,6 +5,7 @@ import Services.ParticipantService;
 import dao.ContestDao;
 import dao.ContestDaoJdbc;
 import domain.Contest;
+import domain.Event;
 import domain.Participant;
 import java.io.IOException;
 import java.net.URL;
@@ -37,7 +38,8 @@ import javafx.stage.Stage;
  */
 public class ListParticipantsViewController implements Initializable {    
     private final ContestDao contestDao = new ContestDaoJdbc();
-    ParticipantService participantService = new ParticipantService();
+    private final ParticipantService participantService = new ParticipantService();
+    private Event selectedEvent;
     
     @FXML
     private ListView<Contest> contestList;       
@@ -69,8 +71,8 @@ public class ListParticipantsViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        populateContestList();        
-        refreshParticipantTable();
+//        populateContestList();        
+//        refreshParticipantTable();
         
         //Repopulate participant table if another contest is selected from the contest list  
         contestList.getSelectionModel().selectedIndexProperty()
@@ -83,13 +85,17 @@ public class ListParticipantsViewController implements Initializable {
             if (event.getClickCount() == 2) {
                 showSinglePersonViewWindow(participantTable.getSelectionModel()
                         .getSelectedItem());
-            }           
-        });
+            }       
+            contestList.getSelectionModel().select(participantTable.getSelectionModel()
+                        .getSelectedItem().getContest());
+        });      
+
         
         //Open participants details on a new window
-        editButton.setOnAction(event
-                -> showSinglePersonViewWindow(participantTable.getSelectionModel()
-                        .getSelectedItem()));
+        editButton.setOnAction(event -> {            
+            showSinglePersonViewWindow(participantTable.getSelectionModel()
+                        .getSelectedItem());
+        });
         
         //Open foundParticipants details dialog with no data to add a new participant
         addNewButton.setOnAction(event -> showSinglePersonViewWindow(null)); 
@@ -98,13 +104,13 @@ public class ListParticipantsViewController implements Initializable {
         // Reload participant table using search criteria
         searchButton.setOnAction(event ->
             populateParticipantTable(
-                    participantService.findByNameOrNumber(searchField.getText())));
+                    participantService.findByNameOrNumber(searchField.getText(), selectedEvent)));
         // Reload participant table using search criteria                
         searchField.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {                
                 contestList.getSelectionModel().clearSelection();
                 populateParticipantTable(
-                        participantService.findByNameOrNumber(searchField.getText()));
+                        participantService.findByNameOrNumber(searchField.getText(), selectedEvent));
             }
         });
         
@@ -120,6 +126,17 @@ public class ListParticipantsViewController implements Initializable {
         });
     }     
     
+    /**
+     * Sets Selected event. This method is called when this view is loaded
+     * from another view.
+     * @param event Event that is assigned to selectedEvent
+     */
+    public void setSelectedEvent(Event event) {
+        this.selectedEvent = event;
+        populateContestList();        
+        refreshParticipantTable();
+    }
+    
     private void refreshParticipantTable() {        
         populateParticipantTable(
                 participantService.findByContest(
@@ -128,7 +145,7 @@ public class ListParticipantsViewController implements Initializable {
 
     private void populateContestList() {
         ObservableList<Contest> contests = FXCollections.observableArrayList();
-        contests.addAll(contestDao.findAll());
+        contests.addAll(contestDao.findAllByEvent(selectedEvent));
         contestList.getItems().addAll(contests);        
         contestList.getSelectionModel().selectFirst();
     }
@@ -182,7 +199,7 @@ public class ListParticipantsViewController implements Initializable {
                     .getResource("/fxml/SinglePersonView.fxml"));            
             Scene scene = new Scene(fxmlLoader.load());
             fxmlLoader.<SinglePersonViewController>getController()
-                    .populateFields(participant);
+                    .populateFields(participant, contestDao.findAllByEvent(selectedEvent));
              
             stage.initModality(Modality.APPLICATION_MODAL); //Lock parent window
             stage.setScene(scene);

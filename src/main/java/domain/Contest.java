@@ -13,20 +13,23 @@ public class Contest {
     private String name;
     private LocalTime startingTime;     
     private Integer numberOfParticipants;
+    private Event event;
 
     public Contest() {
         this.name = "unnamed contest";
     }
     
-public Contest(Integer id, String name, LocalTime contestStarts) {
+public Contest(Integer id, String name, LocalTime contestStarts, Event event) {
         this.id = id;
         this.name = name;
-        this.startingTime = contestStarts;       
+        this.startingTime = contestStarts; 
+        this.event = event;
     }
 
-    public Contest(String name, LocalTime contestStarts) {
+    public Contest(String name, LocalTime contestStarts, Event event) {
         this.name = name;
-        this.startingTime = contestStarts;       
+        this.startingTime = contestStarts; 
+        this.event = event;
     }
 
     public Integer getId() {
@@ -62,6 +65,13 @@ public Contest(Integer id, String name, LocalTime contestStarts) {
         this.numberOfParticipants = participantsNumber;
     }
     
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+    
+    public Event getEvent() {
+        return this.event;
+    }
     
     
     @Override
@@ -81,7 +91,7 @@ public Contest(Integer id, String name, LocalTime contestStarts) {
             return true;
         }  
         Contest p = (Contest) obj;
-        return p.id == this.id;
+        return Objects.equals(p.id, this.id);
     }
 
     @Override

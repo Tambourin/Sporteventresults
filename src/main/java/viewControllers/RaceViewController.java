@@ -2,9 +2,12 @@
 package viewControllers;
 
 import Services.ParticipantService;
+import domain.Event;
 import domain.Participant;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +29,7 @@ import javafx.scene.input.KeyCode;
 public class RaceViewController implements Initializable {
     
     ParticipantService participantService = new ParticipantService();
+    private Event selectedEvent;
 
     @FXML
     private TextField bidNumberField;
@@ -63,8 +67,7 @@ public class RaceViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) { 
-        populateTables();        
-        
+          
         timeField.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 addToFinished();
@@ -75,11 +78,16 @@ public class RaceViewController implements Initializable {
         removeFromFinished.setOnAction(event -> removeFromFinished());
     }    
     
+    public void setSelectedEvent(Event event) {
+        this.selectedEvent = event;
+        populateTables();
+    }
+    
     private void populateTables() {
         ObservableList<Participant> notFinished = FXCollections.observableArrayList();
         ObservableList<Participant> finished = FXCollections.observableArrayList();
-        
-        participantService.findAll().forEach(participant -> {
+         
+        participantService.findByEvent(selectedEvent).forEach(participant -> {
             if (participant.getRaceResult().isZero()) {
                 notFinished.add(participant);
             } else {
@@ -108,7 +116,7 @@ public class RaceViewController implements Initializable {
             return;
         }     
         Participant participant = 
-                participantService.findByNameOrNumber(bidNumberField.getText()).get(0);
+                participantService.findByNameOrNumber(bidNumberField.getText(), selectedEvent).get(0);
         if (participant == null) {
             DialogUtil.showErrorDialog("Kilpailunumero ei ole käytössä!");
         } else if(participant.getRaceResult() != Duration.ZERO) {
