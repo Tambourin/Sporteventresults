@@ -1,0 +1,6 @@
+2019-04-28 14:57:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "INFO VARCHAR(64)": "STRINGDECODE('Muistomitali kaikille osanottajille. \nSarjojen parhaat palkitaan, kuntosarjoissa \npalkinnot arvotaan.\nReitti ko... (139)"; SQL statement:
+UPDATE Event SET name=?, date=?, location=?, info=? WHERE id = ? [22001-198]
+2019-04-28 15:04:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "INFO VARCHAR(64)": "STRINGDECODE('Muistomitali kaikille osanottajille. \nSarjojen parhaat palkitaan, kuntosarjoissa \npalkinnot arvotaan.\nReitti ko... (139)"; SQL statement:
+UPDATE Event SET name=?, date=?, location=?, info=? WHERE id = ? [22001-198]

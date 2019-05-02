@@ -166,7 +166,7 @@ public class EventViewController implements Initializable {
     private void deleteContest() {
         Contest contest = contestsTable.getSelectionModel().getSelectedItem();
         if (contest == null) {
-            DialogUtil.showErrorDialog("Ei valittua tapahtumaa!");
+            DialogUtil.showErrorDialog("Ei valittua sarjaa!");
             return;
         }
         String deletePromtText = "Haluatko varmasti poistaa sarjan "
