@@ -5,6 +5,8 @@
  */
 package Services;
 
+import services1.ContestService;
+import services1.ParticipantService;
 import dao.ContestDao;
 import dao.ContestDaoJdbc;
 import dao.EventDaoJdbc;
@@ -14,10 +16,8 @@ import domain.Event;
 import domain.Participant;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -79,6 +79,8 @@ public class ContestServiceTest {
         try {
             cs.delete(contest);
         } catch (Exception e) {
+            System.out.println(e);
+            return;
         }
         assertNotEquals(null, cDao.findById(id));
         pDao.delete(pId);

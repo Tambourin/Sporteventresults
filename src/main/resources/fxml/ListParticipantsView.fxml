@@ -46,7 +46,7 @@
                                  </image>
                               </ImageView>
                            </graphic></Button>
-                        <Button fx:id="printButton" disable="true" layoutX="716.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="172.0" text="Tulostus">
+                        <Button fx:id="printButton" layoutX="716.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="172.0" text="Tulostus">
                            <graphic>
                               <ImageView fitHeight="21.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

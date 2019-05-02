@@ -1,13 +1,11 @@
 
 package viewControllers;
 
-import Services.ParticipantService;
+import services1.ParticipantService;
 import domain.Event;
 import domain.Participant;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +20,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 
 /**
- * FXML Controller class for RaceView
+ * FXML Controller class for RaceView. In this view user inputs details of
+ * participants who arrive to goal.
  *
  * @author Olavi
  */
@@ -75,9 +74,20 @@ public class RaceViewController implements Initializable {
             }
         });
         addButton.setOnAction(event -> addToFinished());
-        removeFromFinished.setOnAction(event -> removeFromFinished());
+        removeFromFinished.setOnAction(event -> removeFromFinished());        
+        finishedTable.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                removeFromFinished();
+            } 
+        });
+        
     }    
     
+    /**
+     * Sets Selected event. This method should be called when this view is loaded
+     * from another view.
+     * @param event Event that is assigned to selectedEvent
+     */
     public void setSelectedEvent(Event event) {
         this.selectedEvent = event;
         populateTables();

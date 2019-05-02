@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package viewControllers;
 
 import dao.ContestDao;
@@ -16,7 +12,6 @@ import domain.Participant;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Iterator;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,7 +25,8 @@ import javafx.stage.Stage;
 
 
 /**
- * FXML Controller class
+ * FXML Controller class for ResultsViewControlled which is responsible
+ * for showing race standings.
  *
  * @author Olavi
  */
@@ -39,7 +35,7 @@ public class ResultsViewController implements Initializable {
     ContestDao contestDao = new ContestDaoJdbc();
     EventDaoJdbc eventDao = new EventDaoJdbc();
     
-    private Event selectedEvent;
+    private Event selectedEvent; // Stores the event that is being edited across views.
 
     @FXML
     private WebView webView;
@@ -75,6 +71,9 @@ public class ResultsViewController implements Initializable {
         constructHTML();
     }
     
+    /**
+     * Constructs a html-string of event's results and gives it to a webview.
+     */
     private void constructHTML() {
         String message = "";        
         Event event = eventDao.findById(selectedEvent.getId());
@@ -84,7 +83,10 @@ public class ResultsViewController implements Initializable {
         
         List<Contest> contests = contestDao.findAllByEvent(event);
         for (Contest contest : contests) {
-            message += "<h2>" + contest.getName() + "</h2>\n";            
+            message += "<h2>" + contest.getName() + "</h2>\n"; 
+            if(contest.getParticipantsNumber() == 0) {
+                message += "<p>Sarjassa ei maaliin tulleita";
+            }
             
             List<Participant> participants = participantDao.listByContest(contest);
             participants.removeIf(participant -> participant.getRaceResult().equals(Duration.ZERO));

@@ -1,7 +1,7 @@
 package viewControllers;
 
 
-import Services.EventService;
+import services1.EventService;
 import domain.Event;
 import java.io.IOException;
 import java.net.URL;
@@ -33,12 +33,13 @@ public class ChooseEventController implements Initializable {
     AnchorPane anchorPane;
     @FXML
     private ListView<Event> eventsList;
-    
-    
+        
     @FXML
     Button createNewEventButton;
     @FXML
     Button chooseButton;
+    @FXML
+    Button deleteButton;
     
     /**
      * Initializes the controller class.
@@ -51,6 +52,16 @@ public class ChooseEventController implements Initializable {
         });
         chooseButton.setOnAction(e -> {
             loadMainView(eventsList.getSelectionModel().getSelectedItem());
+        });
+        deleteButton.setOnAction(e -> {
+            String message = "Oletko varma, että haluat poistaa tapahtuman: " +
+                    eventsList.getSelectionModel().getSelectedItem() + 
+                    " ja kaikki siihen liittyvät sarjat ja osanottajat?";
+            if (DialogUtil.promptDelete(message)) {
+                eventService.deleteEventAndAssociatedContests(
+                        eventsList.getSelectionModel().getSelectedItem());
+                populateEventsList();
+            }
         });
         
         eventsList.setOnMouseClicked(event -> {
@@ -84,6 +95,7 @@ public class ChooseEventController implements Initializable {
         if(events.isEmpty()) {
             return;
         }
+        eventsList.getItems().clear();
         eventsList.getItems().addAll(events);        
         eventsList.getSelectionModel().selectFirst();
     }

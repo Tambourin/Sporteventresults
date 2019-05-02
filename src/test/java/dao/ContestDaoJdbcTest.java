@@ -59,6 +59,7 @@ public class ContestDaoJdbcTest {
         cDao.delete(id);
     }
 
+   
     @Test
     public void testUpdate() {
         Contest c = new Contest("gaskdjghisawgen", LocalTime.now(), event);
@@ -114,4 +115,25 @@ public class ContestDaoJdbcTest {
         cDao.delete(id);
     }
     
+    @Test
+    public void testFindAllByEvent() {
+        Event event2 = new Event("name", "location", LocalDate.now(), "info");
+        Integer eventID2 = eDao.create(event2);
+        event2.setId(eventID2);
+        
+        Contest c = new Contest("gaskdjghisawgen", LocalTime.now(), event);
+        Integer id = cDao.create(c);
+        c.setId(id);
+        Contest c2 = new Contest("gaskdjghisawgen", LocalTime.now(), event2);
+        Integer id2 = cDao.create(c2);
+        c2.setId(id2);
+        
+        assertTrue(cDao.findAllByEvent(event).contains(c));
+        assertFalse(cDao.findAllByEvent(event2).contains(c));
+        assertTrue(cDao.findAllByEvent(event2).contains(c2));
+        
+        cDao.delete(id);
+        cDao.delete(id2);
+        eDao.delete(eventID2);
+    }
 }

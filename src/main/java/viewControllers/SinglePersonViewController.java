@@ -1,7 +1,7 @@
 
 package viewControllers;
 
-import Services.ParticipantService;
+import services1.ParticipantService;
 import dao.ContestDao;
 import dao.ContestDaoJdbc;
 import domain.Contest;

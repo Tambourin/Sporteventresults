@@ -152,7 +152,7 @@ public class Participant implements Comparable{
             return false;
         }
         Participant p = (Participant) obj;
-        return p.id == this.id;
+        return p.id.equals(this.id);
     }
 
     @Override

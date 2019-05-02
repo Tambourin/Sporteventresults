@@ -1,8 +1,8 @@
 
 package viewControllers;
 
-import Services.ContestService;
-import Services.EventService;
+import services1.ContestService;
+import services1.EventService;
 import domain.Contest;
 import domain.Event;
 import java.net.URL;
@@ -14,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -24,8 +23,8 @@ import javafx.scene.layout.VBox;
 
 
 /**
- * FXML Controller class to initialize controls and 
- * handle user inputs on ContestView fxml. 
+ * FXML Controller class for EventView.fxml. In this view user gets to edit
+ * event details and also add and edit contests.
  * @author Olavi
  */
 public class EventViewController implements Initializable {
@@ -69,8 +68,6 @@ public class EventViewController implements Initializable {
     @FXML
     Button deleteButton;
     
-    @FXML
-    Hyperlink changeEventLink;
     /**
      * Initializes the controller class. Populates tables and fields.
      * Sets event handlers
@@ -203,4 +200,5 @@ public class EventViewController implements Initializable {
             return false;
         }        
     }
+
 }

@@ -5,6 +5,7 @@
  */
 package Services;
 
+import services1.ParticipantService;
 import dao.ContestDao;
 import dao.ContestDaoJdbc;
 import dao.EventDaoJdbc;

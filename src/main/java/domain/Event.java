@@ -80,4 +80,18 @@ public class Event {
         return this.name + ", " + this.date;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Event e = (Event) obj;
+        return e.id.equals(this.id);
+    }
 }

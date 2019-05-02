@@ -153,11 +153,11 @@ public class ContestDaoJdbc implements ContestDao{
         Contest contest = new Contest();
         contest.setId(rs.getInt("id"));
         contest.setName(rs.getString("name"));
-        if (rs.getString("StartingTime") != null) {
+        //if (rs.getString("StartingTime") != null) {
             contest.setStartingTime(LocalTime.parse(rs.getString("StartingTime")));
-        } else {
-            contest.setStartingTime(LocalTime.of(0, 0));
-        }
+        //} else {
+        //    contest.setStartingTime(LocalTime.of(0, 0));
+        //}
         contest.setEvent(new EventDaoJdbc().findById(rs.getInt("EventId")));
         contest.setParticipantsNumber(new ParticipantDaoJdbc().countByContest(contest));
         

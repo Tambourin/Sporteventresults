@@ -1,5 +1,5 @@
 
-package Services;
+package services1;
 
 import dao.ContestDaoJdbc;
 import dao.EventDaoJdbc;
