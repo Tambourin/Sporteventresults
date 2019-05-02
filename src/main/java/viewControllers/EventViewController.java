@@ -1,8 +1,8 @@
 
 package viewControllers;
 
-import services1.ContestService;
-import services1.EventService;
+import services.ContestService;
+import services.EventService;
 import domain.Contest;
 import domain.Event;
 import java.net.URL;

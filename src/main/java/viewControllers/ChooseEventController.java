@@ -1,7 +1,7 @@
 package viewControllers;
 
 
-import services1.EventService;
+import services.EventService;
 import domain.Event;
 import java.io.IOException;
 import java.net.URL;

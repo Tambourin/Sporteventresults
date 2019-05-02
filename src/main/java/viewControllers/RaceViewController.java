@@ -1,7 +1,7 @@
 
 package viewControllers;
 
-import services1.ParticipantService;
+import services.ParticipantService;
 import domain.Event;
 import domain.Participant;
 import java.net.URL;
