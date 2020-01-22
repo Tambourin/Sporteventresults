@@ -1,3 +1,5 @@
+![Screencapture](https://github.com/Tambourin/Sporteventresults/blob/master/sporteventresults.png)
+
 # Sporteventresults
 Participant management and race results application
 This is an excercise project for the course Avoin yo: Ohjelmistotekniikka / Verkkokurssi/Kevät 2019.
